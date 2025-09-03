@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+  Test-pages
+  <p>Input Debugging code</p>
+  <p>If you is nor The developer of this page,please Sign out this pages</p>
+  <input type="text" id="testInput" style="width:100%;font-size:10px;">
+  <p id="81" style="line-height:10px;font-size:8px"></p>
+  <script>
+    const input = document.getElementById('testInput');
+    input.addEventListener('change', (e) => {
+      const url = `/m/gm/verify/${e.target.value}`
+      fetch(url).then(e=>e.json())
+    .then(req=>{
+      if (req.code === 200) {
+        document.getElementById("81").innerText = req.data
+      }
+    })
+    .catch(err=>alert(err))
+    });
+  </script>
+</body>
+</html>

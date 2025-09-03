@@ -1,0 +1,18 @@
+{
+  "name": "sd12",
+  "version": "1.0.0",
+  "description": "HTTP server",
+  "main": "index.js",
+  "scripts": {
+    "start": "bash start.sh",
+    "test": "cpolar http -region=cn 1820"
+  },
+  "keywords": [],
+  "author": "n304Sc-haoran@gitee.com",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "mime-types": "^3.0.1",
+    "nodemailer": "^7.0.5"
+  }
+}
