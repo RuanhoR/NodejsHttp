@@ -1,13 +1,15 @@
-cb=("node" "npm")
-for pkg in "${cb[@]}"; do
-  if command -v "$pkg"; then
-    echo "$pkg is installed"
-    else
-      pkg install -y nodejs
-  fi
-done
-echo "按 CTRL+c 退出"
-while true;do
+echo -e "\n按 CTRL+C 退出"
+while true; do
   node index.js
-  echo "出现错误，已重连"
+  exit_code=$?
+  if [ -f "lib/data/exit.log" ] && 
+     [ "$(tr -d '\n\r' < lib/data/exit.log)" = "Close" ]; then
+    echo "成功退出"
+    rm -f "lib/data/exit.log"
+    break
+  fi
+  if [ $exit_code -ne 0 ]; then
+    echo -e "\n⚠️ 进程异常退出 (代码: $exit_code)，3秒后重启..."
+    sleep 3
+  fi
 done

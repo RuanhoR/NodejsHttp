@@ -1,25 +1,27 @@
-# nodejs
-This is a nodes project
-**run 运行**  
+# nodejs HTTP服务器后端
+This is a nodes project  
+**run 运行** 
+如果你没装 nodejs包，请装完后运行   
 ```bash
 npm start
 ```
 **config 设置配置**  
 *(1)* 如果无法运行验证码或管理员页面模块，请尝试更改配置  
-*(2)* 找到项目的 lib/data/config.json  
-修改内容为：
-```json
-{
-  "host":"<你的SMTP服务URL>",
-  "SMTP":"<你的SMTP授权码>",
-  "account":"<你的邮箱>",
-  "admin": {
-    "password":"< /m/gm 页面查看日志的密码>",
-    "Rpassword":"</m/gm 页面重启服务器的密码>"
-  }
-}
-```
-**page introduce 页面介绍**  
-<等待更新>  
-*Ongoing updates*  
-[默认开启的页面](http://localhost:1820)
+*(2)* 找到项目的 /start-setting.txt
+*(3)* 按里面的注释写就行，语法和Prop差不多
+
+[默认开启的页面](http://localhost:1820)  
+
+# 更新日志  
+**1.0.0-**-2025/9/3   
+更新哈希值密码加密处理、重写项目结构，更优的
+<p>/lib</p>
+结构
+**1.0.1-**-2025/9/4  
+更新了邮箱验证码的对该邮箱地址进行
+<p>防重复请求（频率为1分/1次，可在lib/http/response_tool.js修改）拦截</p>
+这是对以前仅前端拦截的质的飞跃
+**1.0.2-**-2025/9/5  
+移除config.json的json配置，改成简洁易懂的键值对，语法规则：  
+  注释：#
+  格式： \<键\>=\<值\>
