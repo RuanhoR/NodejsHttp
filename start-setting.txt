@@ -12,3 +12,4 @@ host=smtp.163.com
 reload=e._AZ3_1,s
 # 在 /m/gm 看日志的密码
 SysPassword=e._Az.D_4
+#注：文件里的SMTP授权码已无效，仅供演示
