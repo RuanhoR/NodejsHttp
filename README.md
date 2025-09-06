@@ -7,8 +7,8 @@ npm start
 ```
 **config 设置配置**  
 *(1)* 如果无法运行验证码或管理员页面模块，请尝试更改配置  
-*(2)* 找到项目的 /start-setting.txt
-*(3)* 按里面的注释写就行，语法和Prop差不多
+*(2)* 找到项目的 /start-setting.txt  
+*(3)* 按里面的注释写就行，语法和Prop差不多  
 
 [默认开启的页面](http://localhost:1820)  
 
