@@ -1,9 +1,14 @@
+# 启动配置文件
+# #注释，键值对存数据
+
+
+
 # 密码哈希算法
 Password_hash_algorithm=sha512
 # 哈希密码迭代次数
 item=210000
 # 你邮箱的SMTP授权码，请更换
-SMTP=RSi68fnKVsEgb43H
+SMTP=KKuj5zh8YCccDawS
 # 你邮箱
 account=zcvb182a@163.com
 # 你邮箱的SMTP服务器地址
@@ -12,4 +17,5 @@ host=smtp.163.com
 reload=e._AZ3_1,s
 # 在 /m/gm 看日志的密码
 SysPassword=e._Az.D_4
-#注：文件里的SMTP授权码已无效，仅供演示
+# 启动端口
+PORT=1820
