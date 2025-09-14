@@ -12,6 +12,8 @@
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
+    "dayjs": "^1.11.18",
+    "lunar-javascript": "^1.7.4",
     "mime-types": "^3.0.1",
     "nodemailer": "^7.0.5"
   }

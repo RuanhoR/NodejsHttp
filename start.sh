@@ -1,3 +1,32 @@
+install() {
+  if command -v pkg;then
+    pkg uninstall "$1" # 卸载避免包残缺
+    pkg install "$1"
+    return 2
+  fi
+  if command -v apt;then
+    apt remove "$1"
+    apt install "$1"
+    return 2
+  fi
+  if command -v winget;then
+    winget uninstall "$1"
+    winget install "$1"
+    return 2
+  fi
+  echo "请去 nodejs.org 下载安装 nodejs \n 或自行下载nodejs"
+  exit 1
+}
+if command -v node && command -v npm;then
+  echo "nodejs is installed";
+else 
+  install nodejs
+fi
+if  [ -f "node_modules/nodemailer/package.json" ];then 
+  echo "Dependency is installed"
+else 
+  npm install
+fi
 echo -e "\n按 CTRL+C 退出"
 while true; do
   node index.js
@@ -16,7 +45,6 @@ while true; do
         ;;
       "4")
         echo "已重启"
-        ;;
-esac
+    esac
   fi
 done
