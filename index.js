@@ -48,5 +48,5 @@ async function main() {
     });
   })
 }
-main()
-process.on('SIGINT', Exit);
+main();
+process.on('SIGINT', Exit);  // 退出时事件绑定

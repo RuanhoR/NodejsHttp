@@ -22,7 +22,7 @@ Password_hash_algorithm=sha512
 # 哈希密码迭代次数
 item=210000
 # 你邮箱的SMTP授权码，请更换
-SMTP=KKuj5zh8YCccDawS
+SMTP=xxxx
 # 你邮箱
 account=zcvb182a@163.com
 # 你邮箱的SMTP服务器地址

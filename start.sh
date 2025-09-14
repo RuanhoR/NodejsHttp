@@ -32,6 +32,7 @@ while true; do
   node index.js
   if [ -f "lib/data/exit.log" ];then
     file="$(tr -d '\n\r' < lib/data/exit.log)";
+    rm -rf lib/data/exit.log
     case $file in
       "1")
         echo ""
