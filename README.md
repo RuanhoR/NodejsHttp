@@ -1,9 +1,9 @@
 # nodejs HTTP服务器后端
 This is a nodes project  
 ### run 运行 
-如果你没装 nodejs包，请装完后运行   
+如果你没装 nodejs包，请装完后运行  
+（不需要 **npm install** 。npm start会自动检测+安装）
 ```bash
-npm install   # 安装依赖
 npm start
 ```
 ### 设置配置  
