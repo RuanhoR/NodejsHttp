@@ -19,3 +19,5 @@ reload=e._AZ3_1,s
 SysPassword=e._Az.D_4
 # 启动端口
 PORT=1820
+#禁止的邮箱服务商（必须设置）
+cancel={"url":["mailinator.com","guerrillamail.com","yopmail.com","temp-mail.org","10minutemail.com","maildrop.cc","throwawaymail.com","tempail.com","trashmail.com","fakeinbox.com"]}
