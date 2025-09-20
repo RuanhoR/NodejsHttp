@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "bash start.sh",
-    "test": "cpolar http -region=cn 1820"
+    "test": "cpolar http -region=cn 1820",
+    "debug": "node test.js"
   },
   "keywords": [],
   "author": "n304Sc-haoran@gitee.com",
