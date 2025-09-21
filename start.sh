@@ -23,7 +23,12 @@ else
   install nodejs
 fi
 if  [ -f "node_modules/nodemailer/package.json" ];then 
-  echo "Dependency is installed"
+  echo "Dependency nodemailer is installed"
+else 
+  npm install
+fi
+if  [ -f "node_modules/mime-types/package.json" ];then 
+  echo "Dependency mime-types is installed"
 else 
   npm install
 fi
@@ -35,7 +40,7 @@ while true; do
     rm -rf lib/data/exit.log
     case $file in
       "1")
-        echo ""
+        echo "Error"
         ;;
       "2")
         echo "因错误退出！"
