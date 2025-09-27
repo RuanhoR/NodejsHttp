@@ -1,1 +1,10 @@
-export config={"give:给予玩家物品":{pre:{"@choose":{"@item":{"0:0~2037":{"0:0~2037":{}}}}}}};
+winodw.des = [
+  '/filesD/lib/mcbe-cb/item.js'
+]
+const {body} = document;
+(()=>{
+let script = document.createElement('script');
+script.src = '/filesD/lib/cache.js'
+body.appendChild(script)
+})()
+export const config = 

@@ -40,7 +40,7 @@ while true; do
     rm -rf lib/data/exit.log
     case $file in
       "1")
-        echo "Error"
+        echo "运行时未知原因退出"
         ;;
       "2")
         echo "因错误退出！"

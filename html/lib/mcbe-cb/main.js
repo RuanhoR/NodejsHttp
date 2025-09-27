@@ -1,1 +1,7 @@
-import{config}from"/filesD/lib/mcbe-cb/config.js";const ui=document.getElementById("app"),div=document.createElement("div"),code=document.createElement("input");code.type="text",code.style.position="absolute",code.style.width="100%",code.style.top="90%",ui.appendChild(div),ui.appendChild(code),document.write("e");
+import {
+  config
+} from "/filesD/lib/mcbe-cb/config.js";
+const ui = document.getElementById("app"),
+  div = document.createElement("div"),
+  code = document.createElement("input");
+code.type = "text", code.style.position = "absolute", code.style.width = "100%", code.style.top = "90%", ui.appendChild(div), ui.appendChild(code), document.write("e");

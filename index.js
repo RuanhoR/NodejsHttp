@@ -1,1 +1,3 @@
-"use strict";const server=require("./lib/http"),fs=require("fs"),{_log:_log,setFile:setFile,input:input,getP:getP,Exit:Exit}=require("./lib/tool.js");setFile("./lib/data/exit.log","1");const config=fs.readFileSync("./start-setting.txt").toString();async function isPortAvailable(e){return new Promise(t=>{const i=net.createServer().once("error",()=>t(!1)).once("listening",()=>{i.once("close",()=>t(!0)).close()}).listen(e,"0.0.0.0")})}async function getAvailablePort(e){let t=e;for(;t<65535;){if(await isPortAvailable(t))return t;t++}throw new Error("POSTS is all using")}const net=require("net");async function main(){const e=getP(config,"PORT");"number"!=typeof e?Exit("配置文件错误：PORT 的值非数字"):getAvailablePort(Math.floor(e)).then(e=>{server[0].listen(e,"0.0.0.0",()=>{_log(`Web server is running on http://${server[1]}:${e} (Port: ${e})`)})})}main(),process.on("SIGINT",Exit);
+"use strict";
+const server = require("./lib/http")
+server.start();
