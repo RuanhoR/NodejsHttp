@@ -47,7 +47,6 @@ class main {
       }
     }
     this.url = "/"+window.location.href.split(/https?:\/\/.+?(\.|\:).+?\/.+?\//)[2]
-    alert(this.url)
     this.emailReg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
   }
   getString(Module, type) {
