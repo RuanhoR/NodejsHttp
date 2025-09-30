@@ -1,24 +1,14 @@
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>用户中心</title><style>:root{--primary-color:#4361ee;--secondary-color:#3f37c9;--danger-color:#f72585;--light-color:#f8f9fa;--dark-color:#212529;--border-radius:8px;--box-shadow:0 4px 6px rgba(0, 0, 0, 0.1);--transition:all 0.3s ease}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;background-color:#f5f7fa;color:var(--dark-color);padding:20px}.container{max-width:800px;margin:40px auto;background:#fff;border-radius:var(--border-radius);box-shadow:var(--box-shadow);padding:30px}.profile-header{text-align:center;margin-bottom:30px}.profile-header h1{color:var(--primary-color);margin-bottom:10px}.profile-info{background:var(--light-color);padding:20px;border-radius:var(--border-radius);margin-bottom:30px}.info-item{display:flex;margin-bottom:15px}.info-label{font-weight:700;width:100px;color:var(--secondary-color)}.info-value{flex:1}.btn{display:inline-block;padding:10px 20px;border:none;border-radius:var(--border-radius);cursor:pointer;font-weight:700;text-decoration:none;transition:var(--transition);text-align:center}.btn-danger{background-color:var(--danger-color);color:#fff}.btn-danger:hover{background-color:#d1145a}.nav-links{display:flex;justify-content:space-around;flex-wrap:wrap;margin-top:30px}.nav-link{padding:10px 15px;background-color:var(--primary-color);color:#fff;border-radius:var(--border-radius);text-decoration:none;transition:var(--transition);margin:5px}.nav-link:hover{background-color:var(--secondary-color);transform:translateY(-2px)}@media (max-width:600px){.container{padding:20px}.nav-links{flex-direction:column}.nav-link{margin-bottom:10px;text-align:center}}</style></head><body><div class="container"><div class="profile-header"><h1>用户信息中心</h1></div><div class="profile-info"><div class="info-item"><div class="info-label">用户名：</div><div class="info-value" id="sb"></div></div><div class="info-item"><div class="info-label">邮箱：</div><div class="info-value" id="sv"></div></div></div><div style="text-align:center"><button id="Rem" class="btn btn-danger">注销账号</button></div><div class="nav-links"><a href="/filesD/m.html" class="nav-link">[beta 未重构完成]聊天室</a><a href="/filesD/about.html" class="nav-link">关于作者</a></div></div><script>const v = {user.data};
-    document.getElementById("sb").textContent = v.name || '未设置';
-    document.getElementById("sv").textContent = v.mail
-    document.getElementById("Rem").addEventListener("click", async () => {
-      if (!confirm('确定要注销账号吗？此操作不可撤销！')) return;
-      try {
-        const response = await fetch('/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            type: "del",
-            name: v.name,
-            password: prompt('为保证账号安全，密码已加密。\n请你输入正确的密码，才能进行注销操作')
-          })
-        });
-        const data = await response.json();
-        alert(data.msg);
-        setTimeout(() => window.location = "/", 1000);
-      } catch (e) {
-        alert('操作失败: ' + e.message);
-      }
-    });</script></body></html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta chraset="utf-8">
+  </head>
+  <body>
+    <script type="module" async>
+      import {
+        userUi
+      } from "/filesD/lib/gjs/userui.js";
+      new userUi({user.data})
+    </script>
+  </body>
+</html>

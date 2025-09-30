@@ -1,10 +1,60 @@
-const menuContainer = document.getElementById("menu"), navMenu = document.createElement("div"), menuButton = document.createElement("button"); let isMenuVisible=!1; menuButton.textContent = "≡", menuButton.style.background = "none", menuButton.style.border = "none", menuButton.style.fontSize = "1.5em", menuButton.style.cursor = "pointer", navMenu.style.position = "absolute", navMenu.style.top = "5em", navMenu.style.width = "200px", navMenu.style.background = "white", navMenu.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)", navMenu.style.borderRadius = "4px", navMenu.style.transition = "all 0.3s ease", navMenu.style.opacity = "0", navMenu.style.transform = "translateY(-10px)", navMenu.style.display = "none", navMenu.style.padding = "0.5em 0", navMenu.id = "menu-nav", navMenu.innerHTML = '\n  <a href="/" style="display: block; padding: 0.8em 1em; text-decoration: none; color: #333;">首页</a>\n  <a href="/filesD/m.html" style="display: block; padding: 0.8em 1em; text-decoration: none; color: #333;">聊天室</a>\n', menuButton.addEventListener("click", e=> {
-  e.stopPropagation(), isMenuVisible=!isMenuVisible, navMenu.style.display = isMenuVisible?"block": "none", navMenu.style.opacity = isMenuVisible?"1": "0", navMenu.style.transform = isMenuVisible?"translateY(0)": "translateY(-10px)"
-}), document.addEventListener("click", ()=> {
-  isMenuVisible && (isMenuVisible=!1, navMenu.style.display = "none", navMenu.style.opacity = "0", navMenu.style.transform = "translateY(-10px)")}), navMenu.addEventListener("click", e=> {
-  e.stopPropagation()}), menuContainer.appendChild(menuButton), menuContainer.appendChild(navMenu); const links = navMenu.querySelectorAll("a"); links.forEach(e => {
-  e.addEventListener("mouseenter", ()=> {
-    e.style.background = "#f5f5f5"
-  }), e.addEventListener("mouseleave", ()=> {
-    e.style.background = ""
-  })});
+export class createPage {
+  constructor(data) {
+    if (
+      typeof data !== "object" || !data.switch
+    ) throw new TypeError("ERR_INPUT_PARAM");
+    this.loadCSS("/filesD/lib/gcss/index.css");
+    let main = document.createElement("div");
+    main.classList.add("main");
+    let switchEl = document.createElement("div");
+    switchEl.classList.add("switch");
+    let form = document.createElement("div")
+    form.classList.add("form");
+    form.id = "show-page";
+    form.innerHTML = data.page;
+    this.form = main.appendChild(form);
+    data.switch.forEach(e=>{
+      if (typeof e !== "object") return;
+      let El = document.createElement("div");
+      El.id = ((e.id && e.id.trim()) || (crypto && crypto.randomUUID())) || "";
+      El.innerText = e.title;
+      switchEl.appendChild(El);
+      e.canSwitch && El.addEventListener("click",()=>{
+        this.#setPage(El.id);
+        if (e.run) e.run(El,this.form);
+      });
+    })
+    this.switch = main.appendChild(switchEl)
+    document.body.appendChild(main);
+  }
+  setChildById(id) {
+    id && (()=>{
+      // 切换页面序号，下个commit做
+    })()
+  }
+  getById(id) {
+    return document.getElementById(id)
+  }
+  PageContentSeter(id,htmlContent) {
+    if (typeof id !== "string" || typeof htmlContent !== "string") throw new TypeError("ERR_INPUT")
+    if (!this.page) this.page = {};
+    this.page[id] = htmlContent;
+  }
+  #setPage(id) {
+    const Content = this.page?.[id] || "<p>未定义页面</p>";
+    if (Content) this.form.innerHTML = Content
+  }
+  loadCSS(href) {
+    if (this.#isLoadedCss(href)) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href = href;
+    document.head.appendChild(link);
+  }
+  #isLoadedCss(url) {
+    const absoluteUrl = new URL(url, document.baseURI).href;
+    return Array.from(document.styleSheets)
+      .some(sheet => sheet.href === absoluteUrl);
+  }
+}

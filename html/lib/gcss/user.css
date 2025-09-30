@@ -1,0 +1,19 @@
+.t1 {
+  font-size: 25px;
+}
+.group {
+  background-color: white;
+  border-radius: 10px;
+  width: 400px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+}
+.sp {
+  background-color: #9CDB3F;
+  width: 380px;
+  height: 20px;
+  border-radius: 10px;
+  padding: 10px;
+  overflow: auto;
+}
