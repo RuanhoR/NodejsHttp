@@ -1,48 +1,61 @@
 export class createPage {
   constructor(data) {
-    if (
-      typeof data !== "object" || !data.switch
-    ) throw new TypeError("ERR_INPUT_PARAM");
+    if (!data || typeof data !== "object" || !Array.isArray(data.switch)) {
+      throw new TypeError("ERR_INPUT_PARAM");
+    }
+    this.page = {};
+    this.run = {};
+    this.idList = [];
     this.loadCSS("/filesD/lib/gcss/index.css");
-    let main = document.createElement("div");
+    const main = document.createElement("div");
     main.classList.add("main");
-    let switchEl = document.createElement("div");
+    const switchEl = document.createElement("div");
     switchEl.classList.add("switch");
-    let form = document.createElement("div")
+    const form = document.createElement("div");
     form.classList.add("form");
     form.id = "show-page";
-    form.innerHTML = data.page;
+    form.innerHTML = data.page ?? "";
     this.form = main.appendChild(form);
-    data.switch.forEach(e=>{
-      if (typeof e !== "object") return;
-      let El = document.createElement("div");
-      El.id = ((e.id && e.id.trim()) || (crypto && crypto.randomUUID())) || "";
-      El.innerText = e.title;
+    data.switch.forEach(item => {
+      if (!item || typeof item !== "object") return;
+      const {
+        id,
+        title,
+        run,
+        canSwitch
+      } = item;
+      const El = document.createElement("div");
+      El.id = (id?.trim()) || (crypto?.randomUUID?.() ?? `page-${Date.now()}`);
+      El.innerText = title ?? "未命名";
+      this.idList.push(El.id);
       switchEl.appendChild(El);
-      e.canSwitch && El.addEventListener("click",()=>{
-        this.#setPage(El.id);
-        if (e.run) e.run(El,this.form);
+      const clickHandler = this.RecordClickEvent(El.id, () => {
+        this.setPage(El.id);
+        if (typeof run === "function") run(El, this.form);
       });
-    })
-    this.switch = main.appendChild(switchEl)
+      if (canSwitch) {
+        El.addEventListener("click", clickHandler);
+      }
+    });
+    this.switch = main.appendChild(switchEl);
     document.body.appendChild(main);
   }
-  setChildById(id) {
-    id && (()=>{
-      // 切换页面序号，下个commit做
-    })()
+  RecordClickEvent(id, callback) {
+    this.run[id] = callback;
+    return callback;
   }
   getById(id) {
-    return document.getElementById(id)
+    return document.getElementById(id);
   }
-  PageContentSeter(id,htmlContent) {
-    if (typeof id !== "string" || typeof htmlContent !== "string") throw new TypeError("ERR_INPUT")
-    if (!this.page) this.page = {};
+  PageContentSeter(id, htmlContent) {
+    if (typeof id !== "string" || typeof htmlContent !== "string") {
+      throw new TypeError("ERR_INPUT");
+    }
     this.page[id] = htmlContent;
   }
-  #setPage(id) {
-    const Content = this.page?.[id] || "<p>未定义页面</p>";
-    if (Content) this.form.innerHTML = Content
+  setPage(id) {
+    const content = this.page?.[id] ?? "<p>未定义页面</p>";
+    this.form.innerHTML = content;
   }
   loadCSS(href) {
     if (this.#isLoadedCss(href)) return;
@@ -54,7 +67,6 @@ export class createPage {
   }
   #isLoadedCss(url) {
     const absoluteUrl = new URL(url, document.baseURI).href;
-    return Array.from(document.styleSheets)
-      .some(sheet => sheet.href === absoluteUrl);
+    return Array.from(document.styleSheets).some(sheet => sheet.href === absoluteUrl);
   }
 }

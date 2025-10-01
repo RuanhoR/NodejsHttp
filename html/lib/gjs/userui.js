@@ -8,20 +8,12 @@ export class userUi {
         {
           title: "基础设置",
           id: "home",
-          canSwitch: true,
-          run: this.OnSetHome.bind(this)
+          canSwitch: true
         }
       ],
       page: "<h1 class='t1'>从左侧栏目获取或修改信息</h1>"
     })
     this.page.loadCSS("/filesD/lib/gcss/user.css")
-    this.page.PageContentSeter("home",`<div class='group'><div class='sp'>用户名：${data.name}</div><div class="sp">邮箱：${data.mail}</div><div id="t"></div></div>`)
-  }
-  OnSetHome(El,form) {
-    const {
-      page
-    } = this;
-    const i = page.getById("t")
-    i.innerHTML = "t"
+    this.page.PageContentSeter("home",`<div class='group'><div class='sp'>用户名：${data.name}</div><div class="sp">邮箱：${data.mail}<div id="reloadmail"></div></div></div>`)
   }
 }
