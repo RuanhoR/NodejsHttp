@@ -1,15 +1,61 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-  </head>
-  <body>
-        <script type="module">
-      import {createPage} from "/filesD/lib/menu-v2.js";
-      new createPage({
-        switch: [],
-        page: ""
-      })
-    </script>
-  </body>
+<!--测试html，没啥价值-->
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>Dialog Demo</title>
+  <style>
+    dialog {
+      border: none;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .btn {
+      padding: 6px 12px;
+      margin: 4px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #eee;
+    }
+    .btn:hover {
+      background: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <button id="openDialog" class="btn">打开弹窗</button>
+  <pre id="result"></pre>
+
+  <script type="module">
+    import { createPage } from "/filesD/lib/menu-v2.js";
+
+    // 创建页面实例
+    const Page = new createPage({
+      switch: [], // 这里先不给切换页面，专门演示 dialog
+    });
+
+    // 定义一个 dialog
+    const myDialog = Page.dialog({
+      class: "my-dialog",
+      content: [
+        { type:"h2", title:"用户信息" },
+        { type:"p", title:"请输入昵称：" },
+        { type:"input", id:"nick", class:"input", isReturn:true },   // 可返回
+        { type:"p", title:"请输入邮箱：" },
+        { type:"input", id:"mail", class:"input", isReturn:true },   // 可返回
+        { type:"button", id:"okBtn", title:"确定", class:"btn", close:true },
+        { type:"button", id:"cancelBtn", title:"取消", class:"btn", close:true }
+      ]
+    });
+
+    // 绑定按钮 → 打开弹窗
+    document.getElementById("openDialog").addEventListener("click", async ()=>{
+      const data = await myDialog.RDAOpen();
+      document.getElementById("result").innerText = "返回数据：\n" + JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
 </html>

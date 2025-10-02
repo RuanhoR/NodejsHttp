@@ -38,3 +38,13 @@ cancel={"url":["mailinator.com","guerrillamail.com","yopmail.com","temp-mail.org
 用户密码以256位哈希值+128位盐值加密  
 迭代次数和算法在配置中更改  
 验证码存储在/lib/data/verify 有5分钟时间限制  
+### 证书
+  
+*本地使用自签名证书*  
+会报毒，有条件可以换  
+开发测试用这个就行了  
+
+### 采用的第三方库
+
+**./html/lib/translation.js  --gitee开源项目 -- 原仓库链接如下**  
+** 链接：https://gitee.com/mail_osc/translate  **  

@@ -1,6 +1,13 @@
 :root {
   color-scheme:only light !important
 }
+.form-send {
+  position: relative;
+  background-color: #D39100;
+  border-color: #777777;
+  border-radius: 20px;
+  padding: 10px;
+}
 body {
   position: relative;
   width: 100%;
