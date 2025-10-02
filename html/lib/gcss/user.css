@@ -1,4 +1,53 @@
-
+* {
+  padding: 10px;
+}
+.tip {
+  background-color: #888888;
+  text-align: center;
+  border-radius: 10px;
+}
 .group {
-  
+  --width: 40%;
+  --button-color: green;
+  background-color: white;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 10px;
+  width: var(--width);
+  height: 8%;
+  padding: 10px;
+  position: fixed;
+  display: fixed;
+}
+.group-fixed {
+  width: var(--width);
+  height: 8%;
+  position: fixed;
+  top: 50px; /* 调整垂直位置 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+body {
+  background-color: #D39100;
+}
+#username {
+  font-size: 30px;
+  overflow: auto;
+  word-wrap: break-word;
+  height: 50px;
+  width: 80%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+#set-user-name {
+  background-color: var(--button-color);
+  border-radius: 20px;
+  width: 20%;
+  height: 20%;
+}
+.dialog {
+  box-shadow: 0 10px 10px #000000;
+  width: 40%;
 }
