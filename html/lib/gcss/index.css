@@ -57,3 +57,15 @@ input {
   padding: 30px;
   background-color: #DE5A4A;
 }
+@keyframes listMsg {
+  from {
+    top: 0;
+  }
+  to {
+    top: 50px;
+  }
+}
+#msgbox {
+  animation: listMsg 1s ease-in-out;
+  position: fixed;
+}

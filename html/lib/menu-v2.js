@@ -20,6 +20,7 @@
  * @property {Function} close - 关闭dialog
  * @property {AsyncFunction} RDAOpen- - 打开并返回所有在创建时标注了isReturn的标签值，返回Object，可以用标签的id查询
 */
+console.log("menuX库已加载")
 const DefaultPage = "<p>未定义界面</p>"
 class dialogAlert {
   constructor(el) {

@@ -7,7 +7,7 @@
   border-radius: 10px;
 }
 .group {
-  --width: 40%;
+  --width: 25%;
   --button-color: green;
   background-color: white;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
@@ -32,7 +32,10 @@
 body {
   background-color: #D39100;
 }
-#username {
+.top2 {
+  right: 0;
+}
+.user {
   font-size: 30px;
   overflow: auto;
   word-wrap: break-word;
@@ -41,17 +44,30 @@ body {
   padding: 10px;
   box-sizing: border-box;
 }
-#set-user-name {
+.set-btn {
   background-color: var(--button-color);
   border-radius: 20px;
   width: 20%;
   height: 20%;
 }
-.dialog {
+dialog {
   box-shadow: 0 10px 10px #000000;
   width: 40%;
   height: 100;
-  position: absolute;
+  position: fixed;
   top: 20%;
   left: 20%;
+  transform: translate(-50%, -50%);
+}
+.err {
+  background-color: red;
+}
+.err:before {
+  content: "😅";
+}
+.msg {
+  background-color: #d0d855;
+}
+.msg:before {
+  content: "😀";
 }
