@@ -11,8 +11,24 @@ const dialogName = {
   content: [
     {
       type: "p",
-      title: "test",
+      title: "要改的名字……",
       id: "asd"
+    },
+    {
+      type: "input",
+      Eltype: "text",
+      isReturn: true,
+      id: "userName-seter"
+    },
+    {
+      type: "button",
+      close: true,
+      title: "取消"
+    },
+    {
+      type: "button",
+      close: true,
+      title: "确定"
     }
   ]
 };
@@ -35,7 +51,7 @@ export class userUi {
       ]
     })
     this.page.loadCSS("/filesD/lib/gcss/user.css")
-    this.page.PageContentSeter("home",`<div class="group">
+    this.page.SetPageContent("home",`<div class="group">
     <div class="tip">用户名</div>
     <div id="t" class="group-fixed">
       <div id="username">${data.name}</div>
@@ -52,7 +68,7 @@ export class userUi {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
-          },
+          },  // 保留cookie 让后端识别身份
           credentials: 'include',
           body: JSON.stringify(content)
         })
@@ -70,7 +86,8 @@ export class userUi {
     if (typeof name !== "number" || !setting) throw new TypeError("ERR_INPUT")
     switch (name) {
       case 0:
-        const res = await page.dialog(dialogName).RDAOpen()
+        const res = await page.dialog(dialogName).RDAOpen();
+        alert(JSON.stringify(res))
         break;
       case 1:
         break;

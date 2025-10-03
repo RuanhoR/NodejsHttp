@@ -34,7 +34,7 @@ else
 fi
 echo -e "\n按 CTRL+C 退出"
 while true; do
-  node index.js
+  node --max-old-space-size=4096 index.js
   if [ -f "lib/data/exit.log" ];then
     file="$(tr -d '\n\r' < lib/data/exit.log)";
     rm -rf lib/data/exit.log

@@ -50,4 +50,8 @@ body {
 .dialog {
   box-shadow: 0 10px 10px #000000;
   width: 40%;
+  height: 100;
+  position: absolute;
+  top: 20%;
+  left: 20%;
 }

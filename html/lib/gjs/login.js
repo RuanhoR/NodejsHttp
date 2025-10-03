@@ -36,7 +36,7 @@ class LoginUi {
           </div>
         `
       });
-      this.page.loadCSS("/filesD/lib/gcss/login.css")  // 用 createPage class 加载 css
+      this.page.loadCSS("/filesD/lib/gcss/login.css") // 用 createPage class 加载 css
       this.init();
       this.regBtn();
     } catch (err) {
@@ -204,25 +204,56 @@ class LoginUi {
   }
 
   sendMail(mail) {
-    if (!this.emailReg.test(mail)) return;
+    if (!this.emailReg.test(mail)) {
+      this.showError("邮箱格式错误");
+      return;
+    }
+    const {
+      btn: {
+        verify
+      }
+    } = this.Element;
+    // 禁用按钮并显示倒计时
+    const disableSend = (seconds = 60) => {
+      verify.disabled = true;
+      let left = seconds;
+      const origText = verify.innerText;
+      verify.innerText = `重新发送(${left}s)`;
+      const timer = setInterval(() => {
+        left--;
+        if (left <= 0) {
+          clearInterval(timer);
+          verify.disabled = false;
+          verify.innerText = origText;
+        } else {
+          verify.innerText = `重新发送(${left}s)`;
+        }
+      }, 1000);
+    };
+    // 立刻禁用并倒计时（防止二次点击）
+    disableSend(60);
     this.#JSONPOSTreq(
       "/login/verify", {
         to: mail
       },
       (res) => {
         try {
-          this.showMessage(
-            res.code === 200 ?
-            "发送成功" :
-            "发送失败，具体错误：" + res.err.message
-          );
+          if (res && res.code === 200) {
+            this.showMessage("验证码已发送，请查看邮箱并复制粘贴。");
+          } else {
+            // 如果发送失败，尽快恢复发送按钮（这里给 5 秒冷却）
+            this.showError("发送失败，错误：" + (res?.err ?? res?.msg ?? "未知"));
+            verify.disabled = false;
+            verify.innerText = "发送";
+          }
         } catch (err) {
           this.showError("发送失败，具体错误：" + err.message);
+          verify.disabled = false;
+          verify.innerText = "发送";
         }
       }
     );
   }
-
   regBtn() {
     const {
       name,
