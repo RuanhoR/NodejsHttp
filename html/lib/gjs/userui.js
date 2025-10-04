@@ -1,4 +1,6 @@
-import { createPage } from "/filesD/lib/menu-v2.js";
+import {
+  createPage
+} from "/filesD/lib/menu-v2.js";
 
 const Apiurl = "/login";
 
@@ -7,37 +9,36 @@ const Apiurl = "/login";
  * - 构造时接收 user data（至少包含 name 和 mail）
  * - ClickSet(name, page) 支持 switch + typeof 判断，便于扩展
  */
- console.log("已正确引用Javascript userUi库")
+console.log("已正确引用Javascript userUi库")
 export class userUi {
-  constructor(data = { name: "", mail: "" }) {
+  constructor(data = {
+    name: "",
+    mail: ""
+  }) {
     this.top = 0;
     this.data = data;
     // 创建页面结构（保持和你现有 menu-v2.js 配合）
     this.page = new createPage({
-      switch: [
-        {
-          title: "基础设置",
-          id: "home",
-          canSwitch: true,
-          button: [
-            { id: "set-user-name", run: (e, page) => this.ClickSet("name", page) },
-            { id: "set-user-mail", run: (e, page) => this.ClickSet("mail", page) }
-          ]
-        }
-      ]
+      switch: [{
+        title: "基础设置",
+        id: "home",
+        canSwitch: true,
+        button: [{
+            id: "set-user-name",
+            run: (e, page) => this.ClickSet("name", page)
+          },
+          {
+            id: "set-user-mail",
+            run: (e, page) => this.ClickSet("mail", page)
+          }
+        ]
+      }]
     });
-    this.msgBox = document.querySelectorAll("#msgbox")
-
-    // 加载样式（如果有）
-    this.page.loadCSS("/filesD/lib/gcss/user.css");
-
+    this.msgBox = document.getElementById("msgbox")
     // 设置 home 页内容
     this.page.SetPageContent(
       "home",
-      `<div class="groups">
-         ${this.group(data.name, "用户名", "set-user-name")}
-         ${this.group(data.mail, "邮箱", "set-user-mail")}
-       </div>`
+      `${this.group(data.name, "用户名", "set-user-name")}${this.group(data.mail, "邮箱", "set-user-mail")}`
     );
 
     // 切换到 home（触发按钮注册等逻辑）
@@ -46,14 +47,7 @@ export class userUi {
 
   group(param, eparam, id) {
     this.top++;
-    return `<div class="group top${this.top}">
-      <div class="tip">${eparam}</div>
-      <div class="group-fixed">
-        <div class="user">${param ?? ""}</div>
-        <div id="${id}" class="set-btn">更改</div>
-      </div>
-      <p>滚动查看全部</p>
-    </div>`;
+    return `<div class="group top${this.top}"><div class="tip">${eparam}</div><div class="group-fixed"><div class="user">${param || ""}</div><div id="${id}" class="set-btn">更改</div></div><p>滚动查看全部</p></div>`;
   }
 
   /**
@@ -65,26 +59,40 @@ export class userUi {
   JSONPOSTreq(url, content, callback) {
     try {
       fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(content)
-      })
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify(content)
+        })
         .then(async (res) => {
           let data = null;
           try {
             data = await res.json();
           } catch (e) {
             // 后端可能返回空或非 JSON，退回到一个基本反馈对象
-            data = res.ok ? { code: 200, msg: "OK" } : { code: -1, msg: "服务器返回不可解析响应" };
+            data = res.ok ? {
+              code: 200,
+              msg: "OK"
+            } : {
+              code: -1,
+              msg: "服务器返回不可解析响应"
+            };
           }
           callback && callback(data);
         })
         .catch((err) => {
-          callback && callback({ code: -1, msg: "网络错误" });
+          callback && callback({
+            code: -1,
+            msg: "网络错误"
+          });
         });
     } catch (err) {
-      callback && callback({ code: -1, msg: "网络错误" });
+      callback && callback({
+        code: -1,
+        msg: "网络错误"
+      });
     }
   }
 
@@ -114,10 +122,20 @@ export class userUi {
       case "name": {
         // 一级：改用户名（有 取消 按钮）
         const dialogConfig = {
-          content: [
-            { type: "p", title: "请输入新的用户名" },
-            { type: "input", isReturn: true, id: "userName-setter" },
-            { type: "button", close: true, title: "取消" },
+          content: [{
+              type: "p",
+              title: "请输入新的用户名"
+            },
+            {
+              type: "input",
+              isReturn: true,
+              id: "userName-setter"
+            },
+            {
+              type: "button",
+              close: true,
+              title: "取消"
+            },
             {
               type: "button",
               title: "确定",
@@ -134,12 +152,16 @@ export class userUi {
                 // 禁用按钮避免重复点击
                 btn.disabled = true;
                 this.JSONPOSTreq(
-                  "/login/set",
-                  { setting: "name", value: newName },
+                  "/login/set", {
+                    setting: "name",
+                    value: newName
+                  },
                   (res) => {
                     btn.disabled = false;
                     if (res && res.code === 200) {
-                      try { dlg.close(); } catch (er) {}
+                      try {
+                        dlg.close();
+                      } catch (er) {}
                       finalCallback(res);
                     } else {
                       this.showError(res?.msg || "修改失败");
@@ -161,10 +183,20 @@ export class userUi {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         const firstDialog = {
-          content: [
-            { type: "p", title: "请输入要绑定的新邮箱" },
-            { type: "input", isReturn: true, id: "mail-setter" },
-            { type: "button", close: true, title: "取消" },
+          content: [{
+              type: "p",
+              title: "请输入要绑定的新邮箱"
+            },
+            {
+              type: "input",
+              isReturn: true,
+              id: "mail-setter"
+            },
+            {
+              type: "button",
+              close: true,
+              title: "取消"
+            },
             {
               type: "button",
               title: "发送验证码",
@@ -183,19 +215,33 @@ export class userUi {
                 }
                 // 发送验证码请求到后端：POST /login/verify { to: newMail }
                 btn.disabled = true;
-                this.JSONPOSTreq("/login/verify", { to: newMail }, (res) => {
+                this.JSONPOSTreq("/login/verify", {
+                  to: newMail
+                }, (res) => {
                   btn.disabled = false;
                   if (res && res.code === 200) {
                     // 发送成功：关闭一级对话框并弹出二级对话框
-                    try { dlg.close(); } catch (err) {}
+                    try {
+                      dlg.close();
+                    } catch (err) {}
                     this.showMessage("验证码发送成功，请查收邮件");
 
                     // 二级对话：输入验证码（带取消按钮）
                     const secondDialog = {
-                      content: [
-                        { type: "p", title: `验证码已发送至 ${newMail}，请输入验证码` },
-                        { type: "input", isReturn: true, id: "mail-code" },
-                        { type: "button", close: true, title: "取消" },
+                      content: [{
+                          type: "p",
+                          title: `验证码已发送至 ${newMail}，请输入验证码`
+                        },
+                        {
+                          type: "input",
+                          isReturn: true,
+                          id: "mail-code"
+                        },
+                        {
+                          type: "button",
+                          close: true,
+                          title: "取消"
+                        },
                         {
                           type: "button",
                           title: "确定",
@@ -210,16 +256,14 @@ export class userUi {
                             btn2.disabled = true;
                             // 发送最终绑定请求：POST /login/set { setting: "mail", mail: newMail, verify: code }
                             this.JSONPOSTreq(
-                              "/login/set",
-                              { setting: "mail", mail: newMail, verify: code },
+                              "/login/set", {
+                                setting: "mail",
+                                mail: newMail,
+                                verify: code
+                              },
                               (res2) => {
                                 btn2.disabled = false;
-                                if (res2 && res2.code === 200) {
-                                  try { dlg2.close(); } catch (err) {}
-                                  finalCallback(res2);
-                                } else {
-                                  this.showError(res2?.msg || "邮箱验证/绑定失败");
-                                }
+                                window.location = window.location;
                               }
                             );
                           }
@@ -256,31 +300,41 @@ export class userUi {
       if (this.msgBox) {
         this.msgBox.innerText = msg;
         this.msgBox.style.display = "block";
+        this.msgBox.className = "msg";
         clearTimeout(this._msgTimer);
         this._msgTimer = setTimeout(() => {
-          try { this.msgBox.style.display = "none"; } catch (e) {}
+          try {
+            this.msgBox.style.display = "none";
+          } catch (e) {}
         }, 3000);
       } else {
         alert(msg);
       }
     } catch (e) {
-      try { alert(msg); } catch (err) {}
+      try {
+        alert(msg);
+      } catch (err) {}
     }
   }
   showError(msg) {
     try {
       if (this.msgBox) {
-        this.msgBox.innerText = "错误: " + msg;
+        this.msgBox.innerText = msg;
         this.msgBox.style.display = "block";
+        this.msgBox.className = "err";
         clearTimeout(this._msgTimer);
         this._msgTimer = setTimeout(() => {
-          try { this.msgBox.style.display = "none"; } catch (e) {}
+          try {
+            this.msgBox.style.display = "none";
+          } catch (e) {}
         }, 5000);
       } else {
-        alert("错误: " + msg);
+        alert(msg);
       }
     } catch (e) {
-      try { alert("错误: " + msg); } catch (err) {}
+      try {
+        alert(msg);
+      } catch (err) {}
     }
   }
 }

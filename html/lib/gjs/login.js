@@ -36,7 +36,6 @@ class LoginUi {
           </div>
         `
       });
-      this.page.loadCSS("/filesD/lib/gcss/login.css") // 用 createPage class 加载 css
       this.init();
       this.regBtn();
     } catch (err) {
@@ -149,6 +148,7 @@ class LoginUi {
           body: JSON.stringify(content)
         })
         .then((res) => res.json())
+        .then(res=>JSON.parse(res))
         .then(callback);
     } catch (err) {
       callback({
@@ -161,9 +161,9 @@ class LoginUi {
   #req(content, type) {
     this.#JSONPOSTreq("/login", content, (res) => {
       try {
-        if (!res.msg || !res.code) throw new Error("请求错误");
-        res.code === 200 ? this.showMessage(res.msg) : this.showError(res.msg);
+        if (typeof res !== "object") throw new Error("请求错误");
         if (type === "Login") window.location.href = this.url;
+        res.code === 200 ? this.showMessage(res.msg) : this.showError(res.msg)
       } catch (err) {
         this.showError(err.message);
       }
