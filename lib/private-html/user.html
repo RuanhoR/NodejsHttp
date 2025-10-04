@@ -1,14 +1,1 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta chraset="utf-8">
-  </head>
-  <body>
-    <script type="module" async>
-      import {
-        userUi
-      } from "/filesD/lib/gjs/userui.js";
-      new userUi({user.data})
-    </script>
-  </body>
-</html>
+<!DOCTYPE html><html><head><meta chraset="utf-8"><style>*{padding:10px}.tip{background-color:#888888;text-align:center;border-radius:10px}.group{--width:25%;--button-color:green;background-color:white;box-shadow:0 10px 10px rgba(0,0,0,0.1);background-color:white;border-radius:10px;width:var(--width);height:8%;padding:10px;position:fixed;display:fixed}.group-fixed{width:var(--width);height:8%;position:fixed;top:50px;display:flex;justify-content:space-between;align-items:center;padding:10px}body{background-color:#D39100}.top2{right:0}.user{font-size:30px;overflow:auto;word-wrap:break-word;height:50px;width:80%;padding:10px;box-sizing:border-box}.set-btn{background-color:var(--button-color);border-radius:20px;width:20%;height:20%}dialog{box-shadow:0 10px 10px #000000;width:40%;height:100;position:fixed;top:20%;left:20%;transform:translate(-50%,-50%)}.err{background-color:red}.err:before{content:"😅"}.msg{background-color:#d0d855}.msg:before{content:"😀"}@keyframes listMsg{from{top:0}to{top:100px}}#msgbox{animation:listMsg 5s ease-in-out;position:fixed;left:30%;font-size:40px;color:green;border-radius:10px;width:40%;text-align:center;padding:10px;z-index:1000}</style></head><body><div id="msgbox"></div><script type="module" async>import {userUi} from "/filesD/lib/gjs/userui.js";try{new userUi({user.data})}catch(e){alert(e.message)}</script></body></html>
