@@ -15,7 +15,7 @@
  * @property {DialogContent} [content] - dialog内容
 */
 /**
- * @typedef {Object} dialogAlert - 以下所有函数均无参数
+ * @typedef {Object dialogAlert} dialogAlert - 以下所有函数均无参数
  * @property {Function} open - 打开dialog
  * @property {Function} close - 关闭dialog
  * @property {AsyncFunction} RDAOpen- - 打开并返回所有在创建时标注了isReturn的标签值，返回Object，可以用标签的id查询

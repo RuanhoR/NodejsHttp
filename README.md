@@ -49,3 +49,4 @@ cancel={"url":["mailinator.com","guerrillamail.com","yopmail.com","temp-mail.org
 **./html/lib/translation.js  --gitee开源项目 -- 原仓库链接如下**  
 ** 链接：https://gitee.com/mail_osc/translate  **  
 
+
