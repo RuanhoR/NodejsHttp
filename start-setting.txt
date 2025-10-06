@@ -18,6 +18,8 @@ reload=e._AZ3_1,s
 # 在 /m/gm 看日志的密码
 SysPassword=e._Az.D_4
 # 启动端口
-PORT=1820
+PORT=1080
 #禁止的邮箱服务商（必须设置）
 cancel={"url":["mailinator.com","guerrillamail.com","yopmail.com","temp-mail.org","10minutemail.com","maildrop.cc","throwawaymail.com","tempail.com","trashmail.com","fakeinbox.com"]}
+#使用HTTPS协议吗？0:不使用,1:使用
+https=1
