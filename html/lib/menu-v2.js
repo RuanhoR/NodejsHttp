@@ -71,7 +71,6 @@ export class createPage {
     this.page = {};
     this.run = {};
     this.idList = [];
-    this.IsLoad = {};
     this.running = 0;
     // 加载css
     this.loadCSS("/filesD/lib/gcss/index.css");
@@ -107,7 +106,7 @@ export class createPage {
         canSwitch && this.setPage(El.id);
         typeof run === "function" && run(El, this.form);
         this.running = El.id;
-        if (button && !this.IsLoad[El.id]) {
+        if (button) {
           button.forEach((buttonGroup)=>{
             if (!this.isObject(buttonGroup) || !this.hasKeys(buttonGroup,["id","run"],2)) return;
             try {
@@ -120,8 +119,6 @@ export class createPage {
               console.warn(err);
             }
           })
-          // 代表当前button注册完成，不用反复注册了
-          this.IsLoad[El.id] = true;
         }
       });
         El.addEventListener("click", clickHandler);  // 注册tab点击事件
@@ -163,16 +160,11 @@ export class createPage {
       );
       if (typeof content.id === "string") Element.id = this.getId(content.id);
       if (typeof content.title === "string") Element.innerHTML = content.title;
-      if (content.isReturn === true) Element.setAttribute("return", "true");
-      if (content.close === true) {
-        Element.addEventListener("click",()=>{
-          dialog.close();
-        })
-      }
-      typeof content.run === "function" && Element.addEventListener(
-          (typeof content.runType === "string" ? content.runType : "click"),
-          content.run
-        )
+      if (content.isReturn === true) Element.setAttribute("return", "true"); 
+      Element.addEventListener("click",(Event)=>{
+        if (typeof content.run === "function") content.run(Event);
+        if (content.close === true) dialog.close();
+      })
       dialog.appendChild(Element)
     })
     return new dialogAlert(dialog)

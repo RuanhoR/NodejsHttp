@@ -1,48 +1,63 @@
-import { createPage } from "/filesD/lib/menu-v2.js";
+import {
+  createPage
+} from "/filesD/lib/menu-v2.js";
 
 console.log("已正确引用 userUi 模块");
 
 export class userUi {
-  constructor(data = { name: "", mail: "" }) {
-    this.data = data;
-    this.msgBox = document.getElementById("msgbox");
-    this.top = 0;
-
-    // ===== 动态构建页面结构 =====
-    this.page = new createPage({
-      switch: [
-        {
-          title: "基础设置",
-          id: "home",
-          canSwitch: true,
-          button: [
-            { id: "set-user-name", run: (e, page) => this.ClickSet("name", page) },
-            { id: "set-user-mail", run: (e, page) => this.ClickSet("mail", page) },
-          ],
-        },
-        {
-          title: "退出账号",
-          id: "seter",
-          canSwitch: true,
-          run: () => {
-            document.getElementById("clear-user-log").innerText = "退出";
-            document.getElementById('del-user-log').innerText="注销";
+  constructor(data) {
+    try {
+      this.data = data;
+      this.msgBox = document.getElementById("msgbox");
+      this.top = 0;
+      // ===== 动态构建页面结构 =====
+      this.page = new createPage({
+        switch: [{
+            title: "基础设置",
+            id: "home",
+            canSwitch: true,
+            button: [{
+                id: "set-user-name",
+                run: (e, page) => this.ClickSet("name", page)
+              },
+              {
+                id: "set-user-mail",
+                run: (e, page) => this.ClickSet("mail", page)
+              },
+            ],
           },
-          button: [{ id: "clear-user-log", run: (e, page) => this.ClickSet("clear", page) }],
-        },
-      ],
-    });
-
-    // ===== 页面内容填充 =====
-    this.page.SetPageContent(
-      "home",
-      `${this.group(data.name, "用户名", "set-user-name")}
+          {
+            title: "退出账号",
+            id: "seter",
+            canSwitch: true,
+            run: () => {
+              document.getElementById("clear-user-log").innerText = "退出";
+              document.getElementById('del-user-log').innerText = "注销";
+            },
+            button: [{
+              id: "clear-user-log",
+              run: (e, page) => this.ClickSet("clear", page)
+            }, {
+              id: 'del-user-log',
+              run: (e, page) => this.ClickSet('del', page)
+            }],
+          },
+        ],
+      });
+      this.showMsg(`你好，${data.name}`)
+      // ===== 页面内容填充 =====
+      this.page.SetPageContent(
+        "home",
+        `${this.group(data.name, "用户名", "set-user-name")}
        ${this.group(data.mail, "邮箱", "set-user-mail")}`
-    );
-    this.top = 0;
-    this.page.SetPageContent("seter", `${this.group(data.name, "退出", "clear-user-log"))}${this.group(data.name,'注销','del-user-log')}`;
+      );
+      this.top = 0;
+      this.page.SetPageContent("seter", `${this.group(data.name, "退出", "clear-user-log")}  ${this.group(data.name,'注销（没做好）','del-user-log')}`);
 
-    this.page.setChildById("home"); // 默认显示首页
+      this.page.setChildById("home"); // 默认显示首页}
+    } catch (err) {
+      alert(err.stack)
+    }
   }
 
   /** UI 结构生成辅助 */
@@ -66,7 +81,9 @@ export class userUi {
     try {
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         credentials: "include",
         body: JSON.stringify(content),
       });
@@ -78,42 +95,47 @@ export class userUi {
 
       return data;
     } catch (e) {
-      return { code: -1, msg: "网络错误" };
+      return {
+        code: -1,
+        msg: "网络错误"
+      };
     }
   }
 
-  // ==========================
   // 点击设置处理逻辑
-  // ==========================
   async ClickSet(name, page) {
-    if (typeof name !== "string") throw new TypeError("ERR_INPUT");
-
     const finalCallback = (res) => {
       if (res?.code === 200) this.showMsg(res.msg || "修改成功");
       else this.showMsg(res?.msg || "修改失败", true);
     };
-
     const dialogs = {
       name: () => this.dialogChangeName(page, finalCallback),
       mail: () => this.dialogChangeMail(page, finalCallback),
       clear: () => this.dialogLogout(page),
+      del: () => this.dialogLogDel(page)
     };
-
     if (dialogs[name]) dialogs[name]();
     else this.showMsg(`未知操作: ${name}`, true);
   }
 
   // ==========================
   // Dialog 模块封装
-  // ==========================
-
   dialogChangeName(page, callback) {
-    page
-      .dialog({
-        content: [
-          { type: "p", title: "请输入新的用户名" },
-          { type: "input", isReturn: true, id: "userName-setter" },
-          { type: "button", close: true, title: "取消" },
+    page.dialog({
+        content: [{
+            type: "p",
+            title: "请输入新的用户名"
+          },
+          {
+            type: "input",
+            isReturn: true,
+            id: "userName-setter"
+          },
+          {
+            type: "button",
+            close: true,
+            title: "取消"
+          },
           {
             type: "button",
             title: "确定",
@@ -141,10 +163,20 @@ export class userUi {
     const openVerifyDialog = (newMail) => {
       page
         .dialog({
-          content: [
-            { type: "p", title: `验证码已发送至 ${newMail}` },
-            { type: "input", isReturn: true, id: "mail-code" },
-            { type: "button", close: true, title: "取消" },
+          content: [{
+              type: "p",
+              title: `验证码已发送至 ${newMail}`
+            },
+            {
+              type: "input",
+              isReturn: true,
+              id: "mail-code"
+            },
+            {
+              type: "button",
+              close: true,
+              title: "取消"
+            },
             {
               type: "button",
               title: "确定",
@@ -171,10 +203,20 @@ export class userUi {
     // 一级邮箱输入框
     page
       .dialog({
-        content: [
-          { type: "p", title: "请输入要绑定的新邮箱" },
-          { type: "input", isReturn: true, id: "mail-setter" },
-          { type: "button", close: true, title: "取消" },
+        content: [{
+            type: "p",
+            title: "请输入要绑定的新邮箱"
+          },
+          {
+            type: "input",
+            isReturn: true,
+            id: "mail-setter"
+          },
+          {
+            type: "button",
+            close: true,
+            title: "取消"
+          },
           {
             type: "button",
             title: "发送验证码",
@@ -184,7 +226,9 @@ export class userUi {
               if (!newMail) return this.showMsg("邮箱不能为空", true);
               if (!emailRegex.test(newMail)) return this.showMsg("邮箱格式不正确", true);
               e.target.disabled = true;
-              const res = await this.JSONPOSTreq("/login/verify", { to: newMail });
+              const res = await this.JSONPOSTreq("/login/verify", {
+                to: newMail
+              });
               e.target.disabled = false;
               if (res.code === 200) {
                 dlg.close();
@@ -201,8 +245,15 @@ export class userUi {
   dialogLogout(page) {
     page
       .dialog({
-        content: [
-          { type: "p", title: "确定要退出登录吗？" },
+        content: [{
+            type: "p",
+            title: "确定要退出登录吗？"
+          },
+          {
+            title: '取消',
+            type: "button",
+            close: true
+          },
           {
             type: "button",
             title: "确定",
@@ -222,6 +273,49 @@ export class userUi {
         ],
       })
       .open();
+  }
+  async dialogLogDel(page) {
+    let returnV = null;
+    const password = await page.dialog({
+      content: [{
+          type: "p",
+          title: "为保障账号安全，注销请输入密码"
+        },
+        {
+          type: "input",
+          id: "input-password-del",
+          isReturn: true
+        },
+        {
+          type: "button",
+          title: "取消",
+          close: true,
+          run: () => returnV = 0
+        },
+        {
+          type: "button",
+          title: "继续",
+          close: true,
+          run: () => returnV = 1
+        }
+      ]
+    }).RDAOpen().input - password - del.trim();
+    while (returnV === null) {};
+    if (returnV === 0) {
+      this.showMsg('取消成功')
+      return;
+    }
+    if (password.length <= 6) {
+      this.showMsg('密码不符合格式', true)
+      return;
+    }
+    let res = await this.JSONPOSTreq("/login/", {
+      name: this.data.name,
+      password: password,
+      type: "del"
+    });
+    res = await res.json();
+    this.showMsp(res.msg + "", !(res.code === 200));
   }
 
   // ==========================

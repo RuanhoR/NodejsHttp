@@ -145,7 +145,8 @@ class LoginUi {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(content)
+          body: JSON.stringify(content),
+          credentials: 'include'
         })
         .then((res) => res.json())
         .then(res=>JSON.parse(res))
