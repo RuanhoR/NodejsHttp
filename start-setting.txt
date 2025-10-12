@@ -8,7 +8,7 @@ Password_hash_algorithm=sha512
 # 哈希密码迭代次数
 item=210000
 # 你邮箱的SMTP授权码，请更换
-SMTP=xxxx
+SMTP=
 # 你邮箱
 account=zcvb182a@163.com
 # 你邮箱的SMTP服务器地址
@@ -19,6 +19,8 @@ reload=e._AZ3_1,s
 SysPassword=e._Az.D_4
 # 启动端口
 PORT=1080
+# 邮箱提供商使用的端口
+hostMail=587
 #禁止的邮箱服务商（必须设置）
 cancel={"url":["mailinator.com","guerrillamail.com","yopmail.com","temp-mail.org","10minutemail.com","maildrop.cc","throwawaymail.com","tempail.com","trashmail.com","fakeinbox.com"]}
 #使用HTTPS协议吗？0:不使用,1:使用

@@ -46,7 +46,15 @@ cancel={"url":["mailinator.com","guerrillamail.com","yopmail.com","temp-mail.org
 
 ### 采用的第三方库
 
-**./html/lib/translation.js  --gitee开源项目 -- 原仓库链接如下**  
-** 链接：https://gitee.com/mail_osc/translate  **  
+**nodemailer  --gitee开源项目 -- 原仓库链接如下**  
+** 链接：[nodemailer](https://nodemailer.com)  **  
 
+### 作者心声
 
+最初到现在，本项目一直用手机开发  
+所以你也能看到在 start.sh的install里，pkg的优先级总是更高  
+你也可以看到，信息存储呢，一直都是用的多文件的分布式数据库  
+/lib/storage/Butter.js 超过50字节进行Gzip压缩  
+我也写过别的项目，但一直没人关注  
+作者呢，正在上六年级上册，却玩转了html/css/js nodejs java  
+有些地方呢，实在没办法（如https证书用自签名的）  

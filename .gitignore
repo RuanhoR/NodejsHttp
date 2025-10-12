@@ -1,0 +1,3 @@
+node_modules/*
+lib/data/login/*
+lib/data/verify/*
