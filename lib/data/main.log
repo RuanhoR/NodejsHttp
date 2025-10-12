@@ -1,3 +1,4 @@
-log-10月 12日 19:42:14-time's content 
+log-10月 12日 21:44:51-time's content 
 a Standard Time)] 尝试1080端口-成功
-[Sun Oct 12 2025 19:42:14 GMT+0800 (China Standard Time)] Web server is running on https://192.168.2.52:1080 (Port: 1080)
+[Sun Oct 12 2025 21:44:51 GMT+0800 (China Standard Time)] Web server is running on https://172.20.2.13:1080 (Port: 1080)
+[Sun Oct 12 2025 21:46:06 GMT+0800 (China Standard Time)] {"errno":-21,"code":"EISDIR","syscall":"read"}
