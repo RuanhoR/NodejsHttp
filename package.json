@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "bash start.sh",
-    "test": "cpolar http -region=cn https://localhost:1080",
+    "test": "cpolar http  https://localhost:1080",
     "debug": "node test.js"
   },
   "keywords": [],

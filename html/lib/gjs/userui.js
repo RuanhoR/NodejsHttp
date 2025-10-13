@@ -1,16 +1,18 @@
 import {
   createPage
 } from "/filesD/lib/menu-v2.js";
-
-console.log("已正确引用 userUi 模块");
-
 export class userUi {
-  constructor(data) {
+  constructor() {
+    this.start()
+  }
+  async start() {
     try {
-      this.data = data;
+      this.data = await this.JSONPOSTreq('/login/get', {});
+      const {
+        data
+      } = this
       this.msgBox = document.getElementById("msgbox");
       this.top = 0;
-      // ===== 动态构建页面结构 =====
       this.page = new createPage({
         switch: [{
             title: "基础设置",
@@ -44,7 +46,6 @@ export class userUi {
           },
         ],
       });
-      this.showMsg(`你好，${data.name}`)
       // ===== 页面内容填充 =====
       this.page.SetPageContent(
         "home",
@@ -52,14 +53,12 @@ export class userUi {
        ${this.group(data.mail, "邮箱", "set-user-mail")}`
       );
       this.top = 0;
-      this.page.SetPageContent("seter", `${this.group(data.name, "退出", "clear-user-log")}  ${this.group(data.name,'注销（没做好）','del-user-log')}`);
-
+      this.page.SetPageContent("seter", `${this.group(data.name, "退出", "clear-user-log")}  ${this.group(data.name,'注销','del-user-log')}`);
       this.page.setChildById("home"); // 默认显示首页}
     } catch (err) {
       alert(err.stack)
     }
   }
-
   /** UI 结构生成辅助 */
   group(value, label, id) {
     this.top++;
@@ -73,10 +72,7 @@ export class userUi {
         <p>滚动查看全部</p>
       </div>`;
   }
-
-  // ==========================
   // 网络请求部分
-  // ==========================
   async JSONPOSTreq(url, content) {
     try {
       const res = await fetch(url, {
