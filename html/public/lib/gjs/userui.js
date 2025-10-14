@@ -7,10 +7,6 @@ export class userUi {
   }
   async start() {
     try {
-      this.data = await this.JSONPOSTreq('/login/get', {});
-      const {
-        data
-      } = this
       this.msgBox = document.getElementById("msgbox");
       this.top = 0;
       this.page = new createPage({
@@ -46,11 +42,15 @@ export class userUi {
           },
         ],
       });
+      this.data = await this.JSONPOSTreq('/login/get', {});
+      const {
+        data
+      } = this
       // ===== 页面内容填充 =====
+      const timed = new Date(parseInt(data.Ctime));
       this.page.SetPageContent(
         "home",
-        `${this.group(data.name, "用户名", "set-user-name")}
-       ${this.group(data.mail, "邮箱", "set-user-mail")}`
+        `${this.group(data.name, "用户名", "set-user-name")}${this.group(data.mail, "邮箱", "set-user-mail")}<div class='b'>创建时间：${timed.getFullYear()}年${timed.getMonth()+1}月${timed.getDate()}日${timed.getHours()}:${timed.getMinutes()}:${timed.getSeconds()}</div>`
       );
       this.top = 0;
       this.page.SetPageContent("seter", `${this.group(data.name, "退出", "clear-user-log")}  ${this.group(data.name,'注销','del-user-log')}`);
@@ -62,15 +62,7 @@ export class userUi {
   /** UI 结构生成辅助 */
   group(value, label, id) {
     this.top++;
-    return `
-      <div class="group top${this.top}">
-        <div class="tip">${label}</div>
-        <div class="group-fixed">
-          <div class="user">${value || ""}</div>
-          <div id="${id}" class="set-btn">更改</div>
-        </div>
-        <p>滚动查看全部</p>
-      </div>`;
+    return `<div class="group top${this.top}"><div class="tip">${label}</div><div class="group-fixed"><div class="user">${value || ""}</div><div id="${id}" class="set-btn">更改</div></div><p>滚动查看全部</p></div>`;
   }
   // 网络请求部分
   async JSONPOSTreq(url, content) {

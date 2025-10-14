@@ -149,7 +149,6 @@ class LoginUi {
           credentials: 'include'
         })
         .then((res) => res.json())
-        .then(res=>JSON.parse(res))
         .then(callback);
     } catch (err) {
       callback({
@@ -162,9 +161,9 @@ class LoginUi {
   #req(content, type) {
     this.#JSONPOSTreq("/login", content, (res) => {
       try {
-        if (typeof res !== "object") throw new Error("请求错误");
         if (type === "Login") window.location.href = this.url;
         res.code === 200 ? this.showMessage(res.msg) : this.showError(res.msg)
+        if (typeof res !== "object") throw new Error("请求错误");
       } catch (err) {
         this.showError(err.message);
       }

@@ -1,3 +1,6 @@
+# nodejs
 node_modules/*
+# testData
 lib/data/login/*
 lib/data/verify/*
+start-seting.txt
