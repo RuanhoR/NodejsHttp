@@ -81,7 +81,6 @@ class LoginUi {
         commit: "用该邮箱注册"
       }
     };
-    this.url = "/" + window.location.href.split(/https?:\/\/.+?(\.|\:).+?\/.+?\//)[2];
     this.emailReg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
   }
   getString(Module, type) {
@@ -161,7 +160,7 @@ class LoginUi {
   #req(content, type) {
     this.#JSONPOSTreq("/login", content, (res) => {
       try {
-        if (type === "Login") window.location.href = this.url;
+        if (type === "Login") window.location.href = window.location.href;
         res.code === 200 ? this.showMessage(res.msg) : this.showError(res.msg)
         if (typeof res !== "object") throw new Error("请求错误");
       } catch (err) {
