@@ -13,14 +13,32 @@
  * @typedef {Object} dialog
  * @property {string|string[]} [class] - 应用于这个dialog的样式
  * @property {DialogContent} [content] - dialog内容
-*/
+ */
 /**
  * @typedef {Object dialogAlert} dialogAlert - 以下所有函数均无参数
  * @property {Function} open - 打开dialog
  * @property {Function} close - 关闭dialog
  * @property {AsyncFunction} RDAOpen- - 打开并返回所有在创建时标注了isReturn的标签值，返回Object，可以用标签的id查询
-*/
-console.log("menuX库已加载")
+ */
+/**
+ * @typedef {Object} Switchs - 组件
+ * @property {String} title - 显示的标题
+ * @property {String} id - 这个组件的id
+ * @property {Array<ButtonSeter>} - 进入时按钮设置
+ * @property {Function} - 进入tab时运行的函数
+ * @property {boolean} canSwitch - 是否依据SetPageContent设置的内容进行更改
+ */
+/**
+ * @typedef {Object} ButtonSeter - 进入时设置的按钮
+ * @property {Function} run - 这个元素触发事件时运行的函数
+ * @property {String} id - 注册事件的元素id
+ * @property {String} runType - 监测事件的类别，默认click
+ */
+/**
+ * @typedef {Object} SetObject - 页面结构
+ * @property {Array<Switchs>} switch - tab选项卡
+ * @property {String} page - 默认页面内容(一次性)
+ */
 const DefaultPage = "<p>未定义界面</p>"
 class dialogAlert {
   constructor(el) {
@@ -41,20 +59,20 @@ class dialogAlert {
     const {
       El
     } = this;
-    const response = new Promise((i)=>{
+    const response = new Promise((i) => {
       this.open();
-      const run = ()=>{
+      const run = () => {
         const Element = El.querySelectorAll("*[return]");
         let returnValue = {};
-        Element.forEach((item)=>{
+        Element.forEach((item) => {
           const arg = item.getAttribute("return");
           if (arg === null) return;
           returnValue[item.id] = (item.value || item.innerText) || "";
         })
         i(returnValue)
-        El.removeEventListener("close",run)
+        El.removeEventListener("close", run)
       }
-      El.addEventListener("close",run)
+      El.addEventListener("close", run)
     })
     return await response
   }
@@ -63,6 +81,11 @@ class dialogAlert {
   }
 }
 export class createPage {
+  /**
+   * 创建页面
+   * @param {SetObject} - 样式
+   * @return {createPage} - 该类 
+   */
   constructor(data) {
     if (!this.isObject(data) || !Array.isArray(data.switch)) {
       throw new TypeError("ERR_INPUT_PARAM");
@@ -103,25 +126,30 @@ export class createPage {
       // 跳转后执行的函数，由
       // RecordClickEvent收集以便后续调用
       const clickHandler = this.RecordClickEvent(El.id, () => {
-        canSwitch && this.setPage(El.id);
+        if (canSwitch) {
+          const content = this.page?.[El.id] || DefaultPage;
+          this.form.innerHTML = content;
+        }
         typeof run === "function" && run(El, this.form);
         this.running = El.id;
-        if (button) {
-          button.forEach((buttonGroup)=>{
-            if (!this.isObject(buttonGroup) || !this.hasKeys(buttonGroup,["id","run"],2)) return;
+        if (Array.isArray(button)) {
+          button.forEach((buttonGroup) => {
+            if (!this.hasKeys(buttonGroup, ["id", "run"], 2)) return;
             try {
               // 尝试获取按钮并注册事件
               const ButtonElement = document.getElementById(buttonGroup.id);
-              ButtonElement.addEventListener("click",(Event)=>{
-                buttonGroup.run(Event, this)
-              })
+              ButtonElement.addEventListener(
+                buttonGroup.runType || 'click', // 用runType支持指定监听器类别
+                (Event) => {
+                  buttonGroup.run(Event, this)
+                })
             } catch (err) {
               console.warn(err);
             }
           })
         }
       });
-        El.addEventListener("click", clickHandler);  // 注册tab点击事件
+      El.addEventListener("click", clickHandler); // 注册tab点击事件
     });
     this.switch = main.appendChild(switchEl);
     // 添加
@@ -130,27 +158,27 @@ export class createPage {
   getId(id) {
     return (id?.trim()) || (crypto?.randomUUID?.() ?? `page-${Date.now()}`);
   }
-  addClass(el,content) {
-    Array.isArray(content) ? content.forEach(className=>{
-        if (typeof className !== "string") return;
-        el.classList.add(className)
-      }) : (()=>{
-        if (typeof content === "string") el.className = content
-      })();
+  addClass(el, content) {
+    Array.isArray(content) ? content.forEach(className => {
+      if (typeof className !== "string") return;
+      el.classList.add(className)
+    }) : (() => {
+      if (typeof content === "string") el.className = content
+    })();
     return el
   }
   /**
    * 创建一个弹窗
    * @param {dialog} style - 输入的样式|结构
    * @return {dialogAlert} - 一个Object对象
-  */
+   */
   dialog(style) {
     if (!this.isObject(style)) throw new TypeError("ERR_INPUT");
     const dialog = this.addClass(
       document.createElement("dialog"),
       style.class || ""
     );
-    Array.isArray(style.content) && style.content.forEach(content=>{
+    Array.isArray(style.content) && style.content.forEach(content => {
       if (!content.type) return;
       let Element = this.addClass(
         document.createElement(
@@ -160,8 +188,8 @@ export class createPage {
       );
       if (typeof content.id === "string") Element.id = this.getId(content.id);
       if (typeof content.title === "string") Element.innerHTML = content.title;
-      if (content.isReturn === true) Element.setAttribute("return", "true"); 
-      Element.addEventListener("click",(Event)=>{
+      if (content.isReturn === true) Element.setAttribute("return", "true");
+      Element.addEventListener("click", (Event) => {
         if (typeof content.run === "function") content.run(Event);
         if (content.close === true) dialog.close();
       })
@@ -187,7 +215,7 @@ export class createPage {
   /**
    * 使用id切换tab选项卡界面
    * @param {string} id - tab选项卡id
-  */
+   */
   setChildById(id) {
     if (typeof id !== "string") return;
     const run = this.run[id];
@@ -213,7 +241,7 @@ export class createPage {
   /**
    * 用页面序号切换tab选项卡
    * @param {number} num - 序号
-  */
+   */
   setChildByPage(num) {
     if (typeof num !== "number") return;
     const index = this.idList[num] || this.idList[0]
@@ -234,7 +262,7 @@ export class createPage {
    * 设置tab选项卡内容
    * @param {string} id - tab选项卡的id
    * @param {string} htmlContent - 要设置的html内容
-  */
+   */
   SetPageContent(id, htmlContent) {
     if (typeof id !== "string" || typeof htmlContent !== "string") {
       throw new TypeError("ERR_INPUT");
@@ -242,17 +270,9 @@ export class createPage {
     this.page[id] = htmlContent;
   }
   /**
-   * 不建议外部单独调用（只修改视图，不会初始化）
-   * @param {string}id  - 加载tab选项卡的id
-  */
-  setPage(id) {
-    const content = this.page?.[id] ?? DefaultPage;
-    this.form.innerHTML = content;
-  }
-  /**
    * 工具函数：加载css（会检查）
    * @param {string} href - 要加载的csa的href
-  */
+   */
   loadCSS(href) {
     if (this.#isLoadedCss(href)) return;
     const link = document.createElement("link");
@@ -265,7 +285,7 @@ export class createPage {
    * 检查css是否加载
    * @param {string} url - 要检查的css文件的url
    * @return {Boolean} 是否加载
-  */
+   */
   #isLoadedCss(url) {
     const absoluteUrl = new URL(url, document.baseURI).href;
     return Array.from(document.styleSheets).some(sheet => sheet.href === absoluteUrl);
