@@ -4,43 +4,29 @@ import {
 
 class LoginUi {
   constructor() {
-    try {
-      // 用 createPage 创建页面
-      this.page = new createPage({
-        switch: [ // canSwitch 设置为 false 禁用类原支持的页面跳转
-          {
-            id: "switch-log",
-            title: "登录",
-            canSwitch: false
-          },
-          {
-            id: "switch-e-log",
-            title: "邮箱登录",
-            canSwitch: false
-          },
-          {
-            id: "switch-reg",
-            title: "注册",
-            canSwitch: false
-          }
-        ],
-        page: `
-          <div class="form-send">
-            <div id="tip"></div>
-            <div class="group" id="name"><p>输入用户名：</p><input type="text" id="inputname"></div>
-            <div class="group" id="pass"><p>输入密码：</p><input type="password" id="inputpass"></div>
-            <div class="group" id="email"><p>输入邮箱：</p><input type="email" id="inputmail"></div>
-            <div class="group" id="verify"><p>输入验证码：</p><input type="number" id="verify-code"><button id="verify-btn">发送</button></div>
-            <div id="message"></div>
-            <div id="commit"></div>
-          </div>
-        `
-      });
-      this.init();
-      this.regBtn();
-    } catch (err) {
-      alert(err.message);
-    }
+    // 用 createPage 创建页面
+    this.page = new createPage({
+      switch: [ // canSwitch 设置为 false 禁用类原支持的页面跳转
+        {
+          id: "switch-log",
+          title: "登录",
+          canSwitch: false
+        },
+        {
+          id: "switch-e-log",
+          title: "邮箱登录",
+          canSwitch: false
+        },
+        {
+          id: "switch-reg",
+          title: "注册",
+          canSwitch: false
+        }
+      ],
+      page: `<div class="form-send"><div id="tip"></div><div class="group" id="name"><p>输入用户名：</p><input type="text" id="inputname"></div><div class="group" id="pass"><p>输入密码：</p><input type="password" id="inputpass"></div><div class="group" id="email"><p>输入邮箱：</p><input type="email" id="inputmail"></div><div class="group" id="verify"><p>输入验证码：</p><input type="number" id="verify-code"><button id="verify-btn">发送</button></div><div id="message"></div><div id="commit"></div></div>`
+    });
+    this.init();
+    this.regBtn();
   }
   init() {
     this.Element = {
@@ -92,7 +78,6 @@ class LoginUi {
       }
       return "";
     } catch (err) {
-      console.error(err);
       return "";
     }
   }

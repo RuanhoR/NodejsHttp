@@ -1,0 +1,8 @@
+{
+  "ERR_INPUT": "错误：输入参数错误",
+  "ERR_NO_log": "错误：未登录",
+  "ERR_INPUT_TYPE": "类型不正确",
+  "SUCCESS": "操作成功",
+  "ERR_user_repeat": "用户名或邮箱重复",
+  "ERR_usrName_No_chage": "用户名无变化或不符合规律，请重试"
+}

@@ -290,4 +290,9 @@ export class createPage {
     const absoluteUrl = new URL(url, document.baseURI).href;
     return Array.from(document.styleSheets).some(sheet => sheet.href === absoluteUrl);
   }
+  async tes(text) {
+    const res = await fetch(`/get-msg?text=${encodeURIComponent(text)}`)
+    const json = await res.json()
+    return json.msg || '错误'
+  }
 }

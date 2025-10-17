@@ -1,6 +1,7 @@
 import {
   createPage
 } from "/filesD/lib/menu-v2.js";
+
 export class userUi {
   constructor() {
     this.start()
@@ -93,8 +94,7 @@ export class userUi {
   // 点击设置处理逻辑
   async ClickSet(name, page) {
     const finalCallback = (res) => {
-      if (res?.code === 200) this.showMsg(res.msg || "修改成功");
-      else this.showMsg(res?.msg || "修改失败", true);
+    page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200)));
     };
     const dialogs = {
       name: () => this.dialogChangeName(page, finalCallback),
@@ -105,9 +105,6 @@ export class userUi {
     if (dialogs[name]) dialogs[name]();
     else this.showMsg(`未知操作: ${name}`, true);
   }
-
-  // ==========================
-  // Dialog 模块封装
   dialogChangeName(page, callback) {
     page.dialog({
         content: [{
@@ -180,7 +177,7 @@ export class userUi {
                 });
                 e2.target.disabled = false;
                 if (res.code === 200) window.location.reload();
-                else this.showMsg(res.msg || "绑定失败", true);
+                else page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200), true));
               },
             },
           ],
@@ -222,7 +219,9 @@ export class userUi {
                 dlg.close();
                 this.showMsg("验证码已发送，请查收邮件");
                 openVerifyDialog(newMail);
-              } else this.showMsg(res.msg || "发送失败", true);
+              } else {
+                page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200)));
+              }
             },
           },
         ],
@@ -254,7 +253,9 @@ export class userUi {
               });
               e.target.disabled = false;
               if (res.code === 200) window.location.reload();
-              else this.showMsg(res.msg || "退出失败", true);
+              else {
+                page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200)));
+              }
               dlg.close();
             },
           },
@@ -303,7 +304,7 @@ export class userUi {
       type: "del"
     });
     res = await res.json();
-    this.showMsp(res.msg + "", !(res.code === 200));
+    page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200)));
   }
 
   // ==========================
