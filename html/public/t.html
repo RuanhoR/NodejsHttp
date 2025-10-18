@@ -1,1 +1,0 @@
-qemu-system-x86_64 -cpu SandyBridge-v2,+avx -smp 8,cores=8,threads=1,sockets=1 -m 3072M -hda /storage/emulated/0/D/win7.qcow2 -device vmware-svga,vgamem_mb=1024 -device e1000,netdev=n0 -netdev user,id=n0 -accel tcg,thread=multi,tb-size=4096 -machine usb=on -device usb-tablet -vnc :0

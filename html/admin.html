@@ -1,1 +1,12 @@
-<!doctype html><html><body>Test-pages<p>Input Debugging code</p><p>If you is nor The developer of this page,please Sign out this pages</p><input id="testInput" style="width:100%;font-size:10px"><p id="81" style="line-height:10px;font-size:8px"></p><script>const input=document.getElementById("testInput");input.addEventListener("change",t=>{const e=`/m/gm/verify/${t.target.value}`;fetch(e).then(t=>t.json()).then(t=>{200===t.code&&(document.getElementById("81").innerText=t.data)}).catch(t=>alert(t))})</script></body></html>
+<!doctype html>
+<html>
+
+<body>Test-pages<p>Input Debugging code</p>
+  <p>If you is nor The developer of this page,please Sign out this pages</p><input id="testInput" style="width:100%;font-size:10px">
+  <p id="81" style="line-height:10px;font-size:8px"></p>
+  <script>
+    const input=document.getElementById("testInput");input.addEventListener("change",t=>{const e=`/m/gm/verify/${t.target.value}`;fetch(e).then(t=>t.json()).then(t=>{200===t.code&&(document.getElementById("81").innerText=t.data)}).catch(t=>alert(t))})
+  </script>
+</body>
+
+</html>

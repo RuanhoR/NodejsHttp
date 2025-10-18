@@ -1,1 +1,26 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404 - 页面未找到</title><style>h1{font-size:50px;margin-bottom:20px}p{font-size:20px;margin-bottom:30px}a{color:#007bff;text-decoration:none;font-weight:700}a:hover{text-decoration:underline}.container{font-family:Arial,sans-serif;background-color:#f4f4f9;color:#333;text-align:center;padding:50px 20px;max-width:600px;margin:0 auto}#counter-trigger{background-color:#0971fa;border-radius:10px;text-align:center}img{width:100px;height:100px}</style></head><body><div class="container"><h1 id="title">404</h1><img src="/filesD/404.png"><p>您访问的页面不存在。</p><p>您要找的页面可能已被删除、改URL或暂时不可用<br><a href="/">点击这里返回首页</a>或者返回上一页试试</p><p id="counter-trigger">点我试试</p><div id="counter-display">0</div><script>document.getElementById("counter-trigger").addEventListener("click",()=>{const t=document.getElementById("counter-display");switch(t.textContent=+t.textContent+1,document.getElementById("title").innerText="看，变了",+t.textContent){case 91:return alert("谁让你按的");case 999:return alert("真有魄力")}})</script></div></body></html>
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>404 - 页面未找到</title>
+  <style>
+    h1{font-size:50px;margin-bottom:20px}p{font-size:20px;margin-bottom:30px}a{color:#007bff;text-decoration:none;font-weight:700}a:hover{text-decoration:underline}.container{font-family:Arial,sans-serif;background-color:#f4f4f9;color:#333;text-align:center;padding:50px 20px;max-width:600px;margin:0 auto}#counter-trigger{background-color:#0971fa;border-radius:10px;text-align:center}img{width:100px;height:100px}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 id="title">404</h1><img src="/filesD/404.png">
+    <p>您访问的页面不存在。</p>
+    <p>您要找的页面可能已被删除、改URL或暂时不可用<br><a href="/">点击这里返回首页</a>或者返回上一页试试</p>
+    <p id="counter-trigger">点我试试</p>
+    <div id="counter-display">0</div>
+    <script>
+      document.getElementById("counter-trigger").addEventListener("click",()=>{const t=document.getElementById("counter-display");switch(t.textContent=+t.textContent+1,document.getElementById("title").innerText="看，变了",+t.textContent){case 91:return alert("谁让你按的");case 999:return alert("真有魄力")}})
+    </script>
+  </div>
+</body>
+
+</html>
