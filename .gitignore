@@ -3,4 +3,5 @@ node_modules/*
 # testData
 lib/data/login/*
 lib/data/verify/*
-start-seting.txt
+/start-seting.txt
+/lines.sh
