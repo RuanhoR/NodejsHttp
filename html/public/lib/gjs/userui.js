@@ -1,322 +1,165 @@
-import {
-  createPage
-} from "/filesD/lib/menu-v2.js";
+layui.use(['layer','element','form'], function(){
+  const layer = layui.layer;
+  const element = layui.element;
+  const form = layui.form;
 
-export class userUi {
-  constructor() {
-    this.start()
-  }
-  async start() {
-    try {
-      this.msgBox = document.getElementById("msgbox");
-      this.top = 0;
-      this.page = new createPage({
-        switch: [{
-            title: "基础设置",
-            id: "home",
-            canSwitch: true,
-            button: [{
-                id: "set-user-name",
-                run: (e, page) => this.ClickSet("name", page)
-              },
-              {
-                id: "set-user-mail",
-                run: (e, page) => this.ClickSet("mail", page)
-              },
-            ],
-          },
-          {
-            title: "退出账号",
-            id: "seter",
-            canSwitch: true,
-            run: () => {
-              document.getElementById("clear-user-log").innerText = "退出";
-              document.getElementById('del-user-log').innerText = "注销";
-            },
-            button: [{
-              id: "clear-user-log",
-              run: (e, page) => this.ClickSet("clear", page)
-            }, {
-              id: 'del-user-log',
-              run: (e, page) => this.ClickSet('del', page)
-            }],
-          },
-        ],
+  class UserUI {
+    constructor() {
+      this.data = null;
+      this.menuList = [
+        {id:'home', title:'基础设置', run:()=>this.renderHome()},
+        {id:'seter', title:'退出账号', run:()=>this.renderSeter()}
+      ];
+      this.init();
+    }
+
+    async init() {
+      try {
+        this.data = await this.JSONPOSTreq('/login/get', {});
+        this.renderMenu();
+        this.openTab('home');
+      } catch (err) {
+        layer.msg(err.stack || '加载失败', {icon:2});
+      }
+    }
+
+    async JSONPOSTreq(url, data) {
+      try {
+        const res = await fetch(url, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          credentials:'include',
+          body:JSON.stringify(data)
+        });
+        return await res.json().catch(()=>({code:res.ok?200:-1,msg:res.ok?'OK':'服务器返回不可解析响应'}));
+      } catch(e) { return {code:-1,msg:'网络错误'}; }
+    }
+
+    renderMenu() {
+      const menu = document.getElementById('menuTab');
+      menu.innerHTML = '';
+      this.menuList.forEach(item=>{
+        const li = document.createElement('li');
+        li.className = 'layui-nav-item';
+        li.innerHTML = `<a href="javascript:;" data-id="${item.id}">${item.title}</a>`;
+        li.addEventListener('click', ()=>this.openTab(item.id));
+        menu.appendChild(li);
       });
-      this.data = await this.JSONPOSTreq('/login/get', {});
-      const {
-        data
-      } = this
-      // ===== 页面内容填充 =====
-      const timed = new Date(parseInt(data.Ctime));
-      this.page.SetPageContent(
-        "home",
-        `${this.group(data.name, "用户名", "set-user-name")}${this.group(data.mail, "邮箱", "set-user-mail")}<div class='b'>创建时间：${timed.getFullYear()}年${timed.getMonth()+1}月${timed.getDate()}日${timed.getHours()}:${timed.getMinutes()}:${timed.getSeconds()}</div>`
-      );
-      this.top = 0;
-      this.page.SetPageContent("seter", `${this.group(data.name, "退出", "clear-user-log")}  ${this.group(data.name,'注销','del-user-log')}`);
-      this.page.setChildById("home"); // 默认显示首页}
-    } catch (err) {
-      alert(err.stack)
     }
-  }
-  /** UI 结构生成辅助 */
-  group(value, label, id) {
-    this.top++;
-    return `<div class="group top${this.top}"><div class="tip">${label}</div><div class="group-fixed"><div class="user">${value || ""}</div><div id="${id}" class="set-btn">更改</div></div><p>滚动查看全部</p></div>`;
-  }
-  // 网络请求部分
-  async JSONPOSTreq(url, content) {
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify(content),
+
+    openTab(id) {
+      const tabTitle = document.getElementById('tabTitle');
+      const tabContent = document.getElementById('tabContent');
+      // 检查 tab 是否存在
+      let tab = tabTitle.querySelector(`[lay-id="${id}"]`);
+      if(!tab){
+        // 创建 tab
+        const li = document.createElement('li');
+        li.setAttribute('lay-id', id);
+        li.innerText = this.menuList.find(m=>m.id===id)?.title || '未定义';
+        tabTitle.appendChild(li);
+
+        const content = document.createElement('div');
+        content.className = 'layui-tab-item';
+        content.setAttribute('id', 'content-'+id);
+        tabContent.appendChild(content);
+
+        element.tabChange('userTab', id);
+      } else {
+        element.tabChange('userTab', id);
+      }
+      // 渲染内容
+      const item = this.menuList.find(m=>m.id===id);
+      if(item && typeof item.run==='function'){
+        item.run();
+      }
+    }
+
+    renderHome() {
+      const content = document.getElementById('content-home');
+      const t = this.data;
+      const e = new Date(parseInt(t.Ctime));
+      content.innerHTML = `
+        <div class="group">
+          <div class="group-title">用户名</div>
+          <span>${t.name}</span>
+          <button class="layui-btn layui-btn-sm" id="set-user-name">更改</button>
+        </div>
+        <div class="group">
+          <div class="group-title">邮箱</div>
+          <span>${t.mail}</span>
+          <button class="layui-btn layui-btn-sm" id="set-user-mail">更改</button>
+        </div>
+        <div class="group">
+          <div class="group-title">创建时间</div>
+          <span>${e.getFullYear()}-${e.getMonth()+1}-${e.getDate()} ${e.getHours()}:${e.getMinutes()}:${e.getSeconds()}</span>
+        </div>
+      `;
+      document.getElementById('set-user-name').addEventListener('click', ()=>this.dialogChangeName());
+      document.getElementById('set-user-mail').addEventListener('click', ()=>this.dialogChangeMail());
+    }
+
+    renderSeter() {
+      const content = document.getElementById('content-seter');
+      const t = this.data;
+      content.innerHTML = `
+        <div class="group">
+          <button class="layui-btn layui-btn-danger" id="logout">退出登录</button>
+          <button class="layui-btn layui-btn-warm" id="delAccount">注销账号</button>
+        </div>
+      `;
+      document.getElementById('logout').addEventListener('click', ()=>this.dialogLogout());
+      document.getElementById('delAccount').addEventListener('click', ()=>this.dialogLogDel());
+    }
+
+    async dialogChangeName() {
+      layer.prompt({title:'请输入新的用户名'}, async (val,index)=>{
+        if(!val.trim()){ layer.msg('用户名不能为空',{icon:2}); return; }
+        const res = await this.JSONPOSTreq('/login/set',{setting:'name', value:val});
+        layer.close(index);
+        this.showMsg(res.msg,res.code!==200);
+        if(res.code===200) this.init();
       });
+    }
 
-      const data = await res.json().catch(() => ({
-        code: res.ok ? 200 : -1,
-        msg: res.ok ? "OK" : "服务器返回不可解析响应",
-      }));
+    async dialogChangeMail() {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      layer.prompt({title:'请输入新的邮箱'}, async (val,index)=>{
+        if(!emailRegex.test(val.trim())){ layer.msg('邮箱格式不正确',{icon:2}); return; }
+        const sendRes = await this.JSONPOSTreq('/login/verify',{to: val});
+        if(sendRes.code!==200){ this.showMsg(sendRes.msg,true); return; }
+        layer.close(index);
+        layer.prompt({title:`验证码已发送至 ${val}`}, async (code, idx)=>{
+          const res = await this.JSONPOSTreq('/login/set',{setting:'mail', mail:val, verify:code});
+          layer.close(idx);
+          this.showMsg(res.msg,res.code!==200);
+          if(res.code===200) window.location.reload();
+        });
+      });
+    }
 
-      return data;
-    } catch (e) {
-      return {
-        code: -1,
-        msg: "网络错误"
-      };
+    async dialogLogout() {
+      layer.confirm('确定要退出登录吗？', async index=>{
+        const res = await this.JSONPOSTreq('/login/set',{setting:'clear', value:''});
+        this.showMsg(res.msg,res.code!==200);
+        if(res.code===200) window.location.reload();
+        layer.close(index);
+      });
+    }
+
+    async dialogLogDel() {
+      layer.prompt({title:'请输入密码以注销账号', formType:1}, async (val,index)=>{
+        if(!val || val.length<=6){ layer.msg('密码不符合格式',{icon:2}); return; }
+        layer.close(index);
+        const res = await this.JSONPOSTreq('/login/', {name:this.data.name, password:val, type:'del'});
+        this.showMsg(res.msg,res.code!==200);
+      });
+    }
+
+    showMsg(msg,error=false){
+      layer.msg(msg,{icon:error?2:1,time:3000});
     }
   }
 
-  // 点击设置处理逻辑
-  async ClickSet(name, page) {
-    const finalCallback = (res) => {
-    page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200)));
-    };
-    const dialogs = {
-      name: () => this.dialogChangeName(page, finalCallback),
-      mail: () => this.dialogChangeMail(page, finalCallback),
-      clear: () => this.dialogLogout(page),
-      del: () => this.dialogLogDel(page)
-    };
-    if (dialogs[name]) dialogs[name]();
-    else this.showMsg(`未知操作: ${name}`, true);
-  }
-  dialogChangeName(page, callback) {
-    page.dialog({
-        content: [{
-            type: "p",
-            title: "请输入新的用户名"
-          },
-          {
-            type: "input",
-            isReturn: true,
-            id: "userName-setter"
-          },
-          {
-            type: "button",
-            close: true,
-            title: "取消"
-          },
-          {
-            type: "button",
-            title: "确定",
-            run: async (e) => {
-              const dlg = e.target.closest("dialog");
-              const newName = dlg.querySelector("#userName-setter")?.value.trim();
-              if (!newName) return this.showMsg("用户名不能为空", true);
-              e.target.disabled = true;
-              const res = await this.JSONPOSTreq("/login/set", {
-                setting: "name",
-                value: newName,
-              });
-              e.target.disabled = false;
-              if (res.code === 200) dlg.close();
-              callback(res);
-            },
-          },
-        ],
-      })
-      .open();
-  }
-
-  dialogChangeMail(page, callback) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const openVerifyDialog = (newMail) => {
-      page
-        .dialog({
-          content: [{
-              type: "p",
-              title: `验证码已发送至 ${newMail}`
-            },
-            {
-              type: "input",
-              isReturn: true,
-              id: "mail-code"
-            },
-            {
-              type: "button",
-              close: true,
-              title: "取消"
-            },
-            {
-              type: "button",
-              title: "确定",
-              run: async (e2) => {
-                const dlg2 = e2.target.closest("dialog");
-                const code = dlg2.querySelector("#mail-code")?.value.trim();
-                if (!code) return this.showMsg("验证码不能为空", true);
-                e2.target.disabled = true;
-                const res = await this.JSONPOSTreq("/login/set", {
-                  setting: "mail",
-                  mail: newMail,
-                  verify: code,
-                });
-                e2.target.disabled = false;
-                if (res.code === 200) window.location.reload();
-                else page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200), true));
-              },
-            },
-          ],
-        })
-        .open();
-    };
-
-    // 一级邮箱输入框
-    page
-      .dialog({
-        content: [{
-            type: "p",
-            title: "请输入要绑定的新邮箱"
-          },
-          {
-            type: "input",
-            isReturn: true,
-            id: "mail-setter"
-          },
-          {
-            type: "button",
-            close: true,
-            title: "取消"
-          },
-          {
-            type: "button",
-            title: "发送验证码",
-            run: async (e) => {
-              const dlg = e.target.closest("dialog");
-              const newMail = dlg.querySelector("#mail-setter")?.value.trim();
-              if (!newMail) return this.showMsg("邮箱不能为空", true);
-              if (!emailRegex.test(newMail)) return this.showMsg("邮箱格式不正确", true);
-              e.target.disabled = true;
-              const res = await this.JSONPOSTreq("/login/verify", {
-                to: newMail
-              });
-              e.target.disabled = false;
-              if (res.code === 200) {
-                dlg.close();
-                this.showMsg("验证码已发送，请查收邮件");
-                openVerifyDialog(newMail);
-              } else {
-                page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200)));
-              }
-            },
-          },
-        ],
-      })
-      .open();
-  }
-
-  dialogLogout(page) {
-    page
-      .dialog({
-        content: [{
-            type: "p",
-            title: "确定要退出登录吗？"
-          },
-          {
-            title: '取消',
-            type: "button",
-            close: true
-          },
-          {
-            type: "button",
-            title: "确定",
-            run: async (e) => {
-              const dlg = e.target.closest("dialog");
-              e.target.disabled = true;
-              const res = await this.JSONPOSTreq("/login/set", {
-                setting: "clear",
-                value: "",
-              });
-              e.target.disabled = false;
-              if (res.code === 200) window.location.reload();
-              else {
-                page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200)));
-              }
-              dlg.close();
-            },
-          },
-        ],
-      })
-      .open();
-  }
-  async dialogLogDel(page) {
-    let returnV = null;
-    const password = await page.dialog({
-      content: [{
-          type: "p",
-          title: "为保障账号安全，注销请输入密码"
-        },
-        {
-          type: "input",
-          id: "input-password-del",
-          isReturn: true
-        },
-        {
-          type: "button",
-          title: "取消",
-          close: true,
-          run: () => returnV = 0
-        },
-        {
-          type: "button",
-          title: "继续",
-          close: true,
-          run: () => returnV = 1
-        }
-      ]
-    }).RDAOpen().input - password - del.trim();
-    while (returnV === null) {};
-    if (returnV === 0) {
-      this.showMsg('取消成功')
-      return;
-    }
-    if (password.length <= 6) {
-      this.showMsg('密码不符合格式', true)
-      return;
-    }
-    let res = await this.JSONPOSTreq("/login/", {
-      name: this.data.name,
-      password: password,
-      type: "del"
-    });
-    res = await res.json();
-    page.tes(res.msg).then(t => this.showMsg(t, !(res.code === 200)));
-  }
-
-  // ==========================
-  // 消息框通用函数
-  // ==========================
-  showMsg(msg, isError = false, delay = 3000) {
-    const el = this.msgBox;
-    if (!el) return alert(msg);
-    el.innerText = msg;
-    el.style.display = "block";
-    el.className = isError ? "err" : "msg";
-    clearTimeout(this._msgTimer);
-    this._msgTimer = setTimeout(() => (el.style.display = "none"), delay);
-  }
-}
+  new UserUI();
+});
