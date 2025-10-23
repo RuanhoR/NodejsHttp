@@ -1,1 +1,573 @@
-<!doctype html><html><head><meta charset="utf-8"><title>用户中心-Layui Tab版</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui-src/dist/css/layui.css"><style>body{background-color:#f7c966}.layui-layout{height:100vh}.left-menu{width:200px;background:#1a1a1a;color:#fff;padding-top:20px}.left-menu.layui-nav-itema{color:#fff}.right-content{padding:20px;overflow-y:auto;height:100%}.group{margin-bottom:20px;padding:15px;background:#fff;border-radius:10px;box-shadow:10px10pxrgba(0,0,0,.1)}.group-title{font-weight:700;margin-bottom:10px}</style></head><body><div class="layui-layout layui-layout-admin"><div class="layui-side left-menu"><ul class="layui-nav layui-nav-tree" lay-filter="menuTab" id="menuTab"></ul></div><div class="layui-body right-content"><div class="layui-tab" lay-filter="userTab" id="userTab"><ul class="layui-tab-title" id="tabTitle"></ul><div class="layui-tab-content" id="tabContent"></div></div></div></div><script src="https://cdn.jsdelivr.net/npm/layui-src/dist/layui.js"></script><script src="/filesD/lib/gjs/userui.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户设置</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #CD7655;
+      --background-color: #f9f9f9;
+      --text-color: #333;
+      --border-color: #ddd;
+      --danger-color: #f44336;
+      --success-color: #4CAF50;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      padding: 10px;
+      line-height: 1.6;
+      max-width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: var(--secondary-color);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #content {
+      position: relative;
+      overflow-y: auto;
+      width: 100%;
+      flex: 1;
+      padding-bottom: 10px;
+    }
+
+    .setting-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .setting-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+      font-size: 1.1em;
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-label {
+      flex: 1;
+    }
+
+    .setting-value {
+      color: #666;
+      margin-right: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+    }
+
+    .btn {
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      font-size: 0.9em;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #3d8b40;
+    }
+
+    .btn-danger {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #d32f2f;
+    }
+
+    input, button {
+      font-family: inherit;
+    }
+
+    input {
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .end {
+      display: flex;
+      background-color: #585B5E;
+      border-radius: 10px;
+      padding: 8px;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 10px;
+      position: sticky;
+      bottom: 0;
+      z-index: 1000;
+    }
+
+    .object {
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-align: center;
+      flex: 1;
+      margin: 0 5px;
+    }
+
+    .acivity {
+      background-color: var(--primary-color);
+    }
+
+    .error {
+      color: var(--danger-color);
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .success {
+      color: var(--success-color);
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 90%;
+      width: 400px;
+    }
+
+    .modal-title {
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+      gap: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">用户设置</div>
+    <div id="user-name-display"></div>
+  </div>
+  
+  <div id="content">
+    <!-- 内容将通过JS动态加载 -->
+  </div>
+  
+  <div class="end">
+    <p class="object acivity">设置</p>
+    <p class="object">发现</p>
+  </div>
+
+  <script>
+    // 全局变量和配置
+    const ctf = document.getElementById("content");
+    const userNameDisplay = document.getElementById("user-name-display");
+    let currentUser = null;
+
+    // 封装的POST请求函数
+    window.POST = async function(url, content) {
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify(content),
+        });
+
+        const data = await res.json().catch(() => ({
+          code: res.ok ? 200 : -1,
+          msg: res.ok ? "OK" : "服务器返回不可解析响应",
+        }));
+
+        return data;
+      } catch (e) {
+        return {
+          code: -1,
+          msg: "网络错误，请检查连接"
+        };
+      }
+    };
+
+    // 主内容操作对象
+    window.MainContent = {
+      set(html) {
+        ctf.innerHTML = html;
+      },
+      classList: ctf.classList
+    };
+
+    // 设置UI组件
+    window.settingUI = {
+      // 渲染用户信息
+      renderUserInfo(user) {
+        if (!user) {
+          return `
+            <div class="setting-card">
+              <div class="setting-title">未登录</div>
+              <p>您尚未登录，请<a href="/log?source=p?page=user">登录</a>后查看设置。</p>
+            </div>
+          `;
+        }
+        
+        return `
+          <div class="setting-card">
+            <div class="setting-title">账户信息</div>
+            <div class="setting-item">
+              <div class="setting-label">用户名</div>
+              <div class="setting-value">${this.escapeHtml(user.name || '未设置')}</div>
+              <button class="btn btn-primary" onclick="settingUI.showEditName('${this.escapeHtml(user.name)}')">修改</button>
+            </div>
+            <div class="setting-item">
+              <div class="setting-label">邮箱</div>
+              <div class="setting-value">${this.escapeHtml(user.mail || '未设置')}</div>
+              <button class="btn btn-primary" onclick="settingUI.showEditMail('${this.escapeHtml(user.mail)}')">修改</button>
+            </div>
+            <div class="setting-item">
+              <div class="setting-label">注册时间</div>
+              <div class="setting-value">${user.Ctime ? new Date(parseInt(user.Ctime)).toLocaleString() : '未知'}</div>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <div class="setting-title">账户操作</div>
+            <button class="btn btn-danger" style="width:100%; margin-bottom:10px;" onclick="settingUI.showLogoutConfirm()">退出登录</button>
+            <button class="btn btn-danger" style="width:100%" onclick="settingUI.showDelUi()">注销账户</button>
+          </div>
+
+          <div id="edit-form-container"></div>
+        `;
+      },
+
+      // 显示修改用户名表单
+      showEditName(currentName) {
+        const container = document.getElementById('edit-form-container');
+        container.innerHTML = `
+          <div class="setting-card">
+            <div class="setting-title">修改用户名</div>
+            <div class="form-group">
+              <input type="text" id="new-username" placeholder="输入新用户名" value="${this.escapeHtml(currentName || '')}">
+              <div id="username-error" class="error"></div>
+            </div>
+            <button class="btn btn-primary" onclick="settingUI.submitNewUsername()">确认修改</button>
+            <button class="btn" onclick="document.getElementById('edit-form-container').innerHTML=''" style="margin-left:10px;">取消</button>
+          </div>
+        `;
+      },
+
+      // 显示修改邮箱表单
+      showEditMail(currentMail) {
+        const container = document.getElementById('edit-form-container');
+        container.innerHTML = `
+          <div class="setting-card">
+            <div class="setting-title">修改邮箱</div>
+            <div class="form-group">
+              <input type="email" id="new-email" placeholder="输入新邮箱地址" value="${this.escapeHtml(currentMail || '')}">
+              <div id="email-error" class="error"></div>
+            </div>
+            <button class="btn btn-primary" onclick="settingUI.submitNewEmail()">确认修改</button>
+            <button class="btn" onclick="document.getElementById('edit-form-container').innerHTML=''" style="margin-left:10px;">取消</button>
+          </div>
+        `;
+      },
+
+      // 显示注销确认界面
+      showDelUi() {
+        const container = document.getElementById('edit-form-container');
+        container.innerHTML = `
+          <div class="setting-card">
+            <div class="setting-title">确认注销账户</div>
+            <p style="margin-bottom:15px;color:var(--danger-color);">警告：此操作不可逆，您的所有数据将被删除！</p>
+            <div class="form-group">
+              <label>为保障安全，请输入密码：</label>
+              <input type="password" id="inputPassword" placeholder="请输入密码"/>
+              <div id="delete-error" class="error"></div>
+            </div>
+            <button class="btn btn-danger" onclick="settingUI.submitDel()">确认注销</button>
+            <button class="btn" onclick="document.getElementById('edit-form-container').innerHTML=''" style="margin-left:10px;">取消</button>
+          </div>
+        `;
+      },
+
+      // 显示退出登录确认
+      showLogoutConfirm() {
+        const container = document.getElementById('edit-form-container');
+        container.innerHTML = `
+          <div class="setting-card">
+            <div class="setting-title">确认退出登录？</div>
+            <p>您将需要重新登录才能访问您的账户。</p>
+            <button class="btn btn-danger" onclick="settingUI.submitLogout()">确认退出</button>
+            <button class="btn" onclick="document.getElementById('edit-form-container').innerHTML=''" style="margin-left:10px;">取消</button>
+          </div>
+        `;
+      },
+
+      // 提交新用户名
+      async submitNewUsername() {
+        const newName = document.getElementById('new-username').value.trim();
+        const errorEl = document.getElementById('username-error');
+
+        if (!newName) {
+          errorEl.textContent = '用户名不能为空';
+          return;
+        }
+
+        // 用户名格式验证（与后端保持一致）
+        const usernameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9_\-]{2,50}$/;
+        if (!usernameRegex.test(newName)) {
+          errorEl.textContent = '用户名格式不正确(2-50位，可包含中文、字母、数字、下划线和连字符)';
+          return;
+        }
+
+        const result = await POST('/login/set', {
+          setting: 'name',
+          value: newName
+        });
+
+        if (result.code === 200) {
+          errorEl.className = 'success';
+          errorEl.textContent = '用户名修改成功';
+          setTimeout(() => {
+            document.getElementById('edit-form-container').innerHTML = '';
+            location.reload();
+          }, 1500);
+        } else {
+          errorEl.textContent = result.msg || '修改失败，请重试';
+        }
+      },
+
+      // 提交新邮箱
+      async submitNewEmail() {
+        const newEmail = document.getElementById('new-email').value.trim();
+        const errorEl = document.getElementById('email-error');
+
+        if (!newEmail) {
+          errorEl.textContent = '邮箱不能为空';
+          return;
+        }
+
+        // 简单邮箱格式验证
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(newEmail)) {
+          errorEl.textContent = '邮箱格式不正确';
+          return;
+        }
+
+        const result = await POST('/login/set', {
+          setting: 'mail',
+          value: newEmail
+        });
+
+        if (result.code === 200) {
+          errorEl.className = 'success';
+          errorEl.textContent = '邮箱修改成功';
+          setTimeout(() => {
+            document.getElementById('edit-form-container').innerHTML = '';
+            location.reload();
+          }, 1500);
+        } else {
+          errorEl.textContent = result.msg || '修改失败，请重试';
+        }
+      },
+
+      // 提交注销请求
+      async submitDel() {
+        const password = document.getElementById('inputPassword').value.trim();
+        const errorEl = document.getElementById('delete-error');
+
+        if (!password) {
+          errorEl.textContent = '密码不能为空';
+          return;
+        }
+
+        // 根据后端API，注销需要发送type为'del'的请求
+        const result = await POST('/login/', {
+          type: 'del',
+          name: currentUser.name,
+          password: password
+        });
+
+        if (result.code === 200) {
+          errorEl.className = 'success';
+          errorEl.textContent = '账户注销成功';
+          setTimeout(() => {
+            window.location.href = '/log?source=p?page=user';
+          }, 1500);
+        } else {
+          errorEl.textContent = result.msg || '注销失败，请检查密码';
+        }
+      },
+
+      // 提交退出登录请求
+      async submitLogout() {
+        const result = await POST('/login/set', {
+          setting: 'clear',
+          value: null
+        });
+
+        if (result.code === 200) {
+          window.location.href = '/log?source=p?page=user';
+        } else {
+          alert('退出登录失败: ' + (result.msg || '未知错误'));
+        }
+      },
+
+      // HTML转义函数，防止XSS
+      escapeHtml(unsafe) {
+        if (unsafe === null || unsafe === undefined) return '';
+        return unsafe.toString()
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+    };
+
+    // 发现页面内容
+    function renderDiscoveryPage() {
+      return `
+        <div class="setting-card">
+          <div class="setting-title">发现</div>
+          <p>这里是发现页面内容，您可以探索更多功能。</p>
+          <div style="margin-top:15px;">
+            <button class="btn btn-primary" style="width:100%;margin-bottom:10px;">功能一</button>
+            <button class="btn btn-primary" style="width:100%;margin-bottom:10px;">功能二</button>
+            <button class="btn btn-primary" style="width:100%;">功能三</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // 初始化函数
+    async function init() {
+      // 底部菜单处理
+      const RawMenu = Array.from(document.querySelectorAll('.end .object'));
+      
+      // 设置菜单点击事件
+      RawMenu.forEach(el => {
+        el.addEventListener("click", () => {
+          // 移除所有活动状态
+          RawMenu.forEach(item => item.classList.remove("acivity"));
+          // 设置当前活动状态
+          el.classList.add("acivity");
+          
+          // 根据菜单文本加载对应内容
+          if (el.innerText.trim() === "设置") {
+            MainContent.set(settingUI.renderUserInfo(currentUser));
+          } else if (el.innerText.trim() === "发现") {
+            MainContent.set(renderDiscoveryPage());
+          }
+        });
+      });
+
+      try {
+        // 获取用户信息
+        const userResult = await POST("/login/get", {});
+          currentUser = userResult;
+          userNameDisplay.textContent = currentUser.name || '用户';
+          // 默认显示设置页面
+          MainContent.set(settingUI.renderUserInfo(currentUser));
+      } catch (error) {
+        console.error('初始化失败:', error);
+        MainContent.set(`
+          <div class="setting-card">
+            <div class="setting-title">加载失败</div>
+            <p>无法加载用户数据，请刷新页面重试。</p>
+          </div>
+        `);
+      }
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
