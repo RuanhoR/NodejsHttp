@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Markdown Editor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .editor-container {
+      display: flex;
+      gap: 20px;
+    }
+    .editor, .preview {
+      width: 45%;
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .toolbar {
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+    .toolbar button {
+      margin-right: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlightjs@11.7.0/lib/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs@11.7.0/styles/default.css">
+
+  <script>
+    function EditText(config) {
+      class Editor {
+        constructor(type, config) {
+          this.type = type;
+          this.config = config;
+          this.element = null;
+          this.previewElement = null;
+          this.toolbarElement = null;
+          this.editorInstance = null;
+        }
+
+        mount(elementId) {
+          this.element = document.getElementById(elementId);
+          if (!this.element) {
+            console.error('Element not found');
+            return;
+          }
+          if (this.type === 'markdown') {
+            this.initMarkdownEditor();
+          }
+        }
+
+        initMarkdownEditor() {
+          // Create toolbar
+          this.toolbarElement = document.createElement('div');
+          this.toolbarElement.className = 'toolbar';
+          this.createToolbarButtons();
+
+          // Insert toolbar before editor element
+          this.element.parentNode.insertBefore(this.toolbarElement, this.element);
+
+          // Create preview area
+          this.previewElement = document.createElement('div');
+          this.previewElement.className = 'preview';
+          this.previewElement.style.marginTop = '20px';
+          this.element.parentNode.insertBefore(this.previewElement, this.element.nextSibling);
+
+          // Initialize marked with highlight.js for syntax highlighting
+          marked.setOptions({
+            highlight: function(code, lang) {
+              const language = hljs.getLanguage(lang) ? lang: 'plaintext';
+              return hljs.highlight(code, {
+                language
+              }).value;
+            },
+            breaks: true,
+          });
+
+          this.editorInstance = this.element;
+          this.element.addEventListener('input', () => {
+            this.updatePreview();
+          });
+          this.updatePreview();
+        }
+
+        createToolbarButtons() {
+          const buttons = [{
+            label: 'Bold',
+            value: '**bold text**'
+          },
+            {
+              label: 'Italic',
+              value: '*italic text*'
+            },
+            {
+              label: 'Link',
+              value: '[link text](http://example.com)'
+            },
+            {
+              label: 'Image',
+              value: '![alt text](http://example.com/image.jpg)'
+            },
+            {
+              label: 'Code Block',
+              value: '```\ncode here\n```'
+            },
+            {
+              label: 'Table',
+              value: '| Column 1 | Column 2 |\n| -------- | -------- |\n| Row 1    | Data     |\n| Row 2    | More data|'
+            },
+          ];
+
+          buttons.forEach(buttonConfig => {
+            const button = document.createElement('button');
+            button.textContent = buttonConfig.label;
+            button.onclick = () => this.insertTextAtCursor(buttonConfig.value);
+            this.toolbarElement.appendChild(button);
+          });
+        }
+
+        insertTextAtCursor(text) {
+          const start = this.element.selectionStart;
+          const end = this.element.selectionEnd;
+
+          this.element.value = this.element.value.substring(0, start) + text + this.element.value.substring(end);
+          this.element.setSelectionRange(start + text.length, start + text.length);
+          this.element.focus();
+          this.updatePreview();
+        }
+
+        updatePreview() {
+          if (this.previewElement && this.element.value) {
+            this.previewElement.innerHTML = marked.parse(this.element.value);
+          }
+        }
+      }
+
+      return new Editor('markdown', config);
+    }
+
+    // Mount the editor to a specific element
+    const appDiv = document.getElementById('app');
+    const textarea = document.createElement('textarea');
+    textarea.className = 'editor';
+    textarea.rows = 10;
+    textarea.placeholder = 'Type your markdown here...';
+    appDiv.appendChild(textarea);
+
+    const editor = EditText({});
+    editor.mount(textarea.id);
+  </script>
+</body>
+</html>

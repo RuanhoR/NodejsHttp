@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to HTML Converter</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/marked/16.2.1/marked.min.js"></script>
+    <style>
+        #editor, #preview {
+            width: 45%;
+            height: 400px;
+            vertical-align: top;
+            display: inline-block;
+            margin-right: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+        }
+        #preview {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="editor"># Hello, World!
+This is a simple markdown editor using marked.js.</textarea>
+    <div id="preview"></div>
+    <script>
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+        function updatePreview() {
+            const markdownText = editor.value;
+            const htmlContent = marked.parse(markdownText,{});
+            preview.innerHTML = htmlContent;
+        }
+        updatePreview();
+        editor.addEventListener('input', updatePreview);
+    </script>
+</body>
+</html>

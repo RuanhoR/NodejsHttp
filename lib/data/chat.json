@@ -1,1 +1,7 @@
-[{"user":"rao然","message":"JSON.parse(await fs.readFile(DATA_PATH.chat, 'utf8') || [])","time":"2025-09-21T08:02:48.025Z"},{"user":"饿啊","message":"哈哈哈哈哈哈哈哈哈哈哈哈哈","time":"2025-10-04T19:24:54+08:00"},{"user":"饿啊","message":"我是印第安人，","time":"2025-10-04T19:25:12+08:00"},{"user":"饿啊","message":"我是印第安人","time":"2025-10-04T19:25:12+08:00"},{"user":"rao然","message":"OK开始睡觉了兄弟们","time":"2025-10-13T00:50:05+08:00"}]
+[
+  {
+    "user": "rao然",
+    "message": "Hello world",
+    "time": "2025-10-25T16:58:14+08:00"
+  }
+]
